@@ -1,5 +1,7 @@
 package com.infiniterunner;
 
+import java.awt.Rectangle;
+
 /**
  * @author Tomasz Baslyk
  */
@@ -34,7 +36,11 @@ public class Obstacle {
     public int getH() {
         return h;
     }
-
+    
+    public Rectangle getBounds() {
+        return new Rectangle(x, y, w, h);
+    }
+ 
     // Movements
     public void moveHorizontal(int dx) {
         

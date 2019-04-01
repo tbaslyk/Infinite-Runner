@@ -1,6 +1,7 @@
 package com.infiniterunner;
 
 import java.awt.Image;
+import java.awt.Rectangle;
 import javax.swing.ImageIcon;
 
 /**
@@ -17,9 +18,11 @@ public class Player {
     Image running2;
 
     private boolean jumpMaxReached;
+    private boolean visible;
 
     public Player() {
 
+        visible = true;
         jumpMaxReached = false;
 
         x = 200;
@@ -66,6 +69,15 @@ public class Player {
     public Image getImage2() {
         return running2;
     }
+    
+    public Rectangle getBounds() {
+        return new Rectangle(x, y, w, h);
+    }
+    
+    public boolean getVisible() {
+        return visible;
+    }
+    
 
     //Movements
     public void moveHorizontal(int dx) {
@@ -98,6 +110,11 @@ public class Player {
             }
         }
         return jumpComplete;
+    }
+    
+    // Setters
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
 }

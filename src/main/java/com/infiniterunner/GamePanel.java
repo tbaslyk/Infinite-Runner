@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,10 +19,12 @@ public class GamePanel extends javax.swing.JPanel {
     private Player player;
     private Obstacle obstacle;
     private boolean animateSwitch;
+    private boolean running;
 
     public GamePanel() {
 
         animateSwitch = false;
+        running = true;
 
         obstacle = new Obstacle();
         player = new Player();
@@ -29,6 +32,8 @@ public class GamePanel extends javax.swing.JPanel {
 
         animatePlayer();
         moveObstacle();
+        checkCollision();
+
     }
 
     public void initpanel() {
@@ -53,10 +58,12 @@ public class GamePanel extends javax.swing.JPanel {
 
         Graphics2D g2 = (Graphics2D) g;
 
-        if (!animateSwitch) {
-            g2.drawImage(player.getImage1(), player.getX(), player.getY(), this);
-        } else {
-            g2.drawImage(player.getImage2(), player.getX(), player.getY(), this);
+        if (player.getVisible()) {
+            if (!animateSwitch) {
+                g2.drawImage(player.getImage1(), player.getX(), player.getY(), this);
+            } else {
+                g2.drawImage(player.getImage2(), player.getX(), player.getY(), this);
+            }
         }
     }
 
@@ -82,11 +89,17 @@ public class GamePanel extends javax.swing.JPanel {
         Timer t = new Timer(timerDelay, new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                obstacle.moveHorizontal(-20);
-                repaint();
-                
-                if(obstacle.getX() <= -20) {
-                    obstacle.moveHorizontal(800);
+
+                if (running) {
+                    obstacle.moveHorizontal(-20);
+                    repaint();
+
+                    if (obstacle.getX() <= -20) {
+                        obstacle.moveHorizontal(800);
+                    }
+                }
+                else {
+                    ((Timer) e.getSource()).stop();
                 }
             }
         });
@@ -131,6 +144,27 @@ public class GamePanel extends javax.swing.JPanel {
         });
         t.setRepeats(true);
         t.start();
+    }
+
+    public void checkCollision() {
+        int timerDelay = 50;
+
+        Timer t = new Timer(timerDelay, new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                Rectangle playerBounds = player.getBounds();
+                Rectangle obstacleBounds = obstacle.getBounds();
+
+                if (obstacleBounds.intersects(playerBounds)) {
+                    player.setVisible(false);
+                    running = false;
+                }
+
+            }
+        });
+        t.setRepeats(true);
+        t.start();
+
     }
 
 }
