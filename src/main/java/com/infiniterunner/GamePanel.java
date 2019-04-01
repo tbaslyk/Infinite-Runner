@@ -9,6 +9,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.Timer;
 
 /**
@@ -19,26 +20,55 @@ public class GamePanel extends javax.swing.JPanel {
     private Player player;
     private Obstacle obstacle;
     private boolean animateSwitch;
+    private boolean jumpInProgress;
     private boolean running;
+    private int count;
+    private JLabel lblCounter;
 
     public GamePanel() {
 
+        jumpInProgress = false;
         animateSwitch = false;
         running = true;
+        count = 0;
 
+        lblCounter = new JLabel("0");
+        lblCounter.setFont(new java.awt.Font("Dialog", 0, 30));
+        
         obstacle = new Obstacle();
         player = new Player();
+
         initpanel();
+        add(lblCounter);
 
         animatePlayer();
         moveObstacle();
         checkCollision();
+        counter();
 
     }
 
     public void initpanel() {
 
         setSize(800, 600);
+
+    }
+
+    public void counter() {
+        int timerDelay = 50;
+
+        Timer t = new Timer(timerDelay, new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                if (running) {
+                    count++;
+                    String stringCount = String.valueOf(count);
+                    lblCounter.setText(stringCount);
+                }
+            }
+        });
+        t.setRepeats(true);
+        t.start();
 
     }
 
@@ -98,9 +128,6 @@ public class GamePanel extends javax.swing.JPanel {
                         obstacle.moveHorizontal(800);
                     }
                 }
-                else {
-                    ((Timer) e.getSource()).stop();
-                }
             }
         });
         t.setRepeats(true);
@@ -110,20 +137,26 @@ public class GamePanel extends javax.swing.JPanel {
     public void drawJump() {
         int timerDelay = 50;
 
-        Timer t = new Timer(timerDelay, new ActionListener() {
+        if (!jumpInProgress) {
 
-            public void actionPerformed(ActionEvent e) {
+            Timer t = new Timer(timerDelay, new ActionListener() {
 
-                boolean jumpComplete = player.jump();
-                repaint();
+                public void actionPerformed(ActionEvent e) {
 
-                if (jumpComplete) {
-                    ((Timer) e.getSource()).stop();
+                    jumpInProgress = true;
+                    boolean jumpComplete = player.jump();
+                    repaint();
+
+                    if (jumpComplete) {
+                        ((Timer) e.getSource()).stop();
+                        jumpInProgress = false;
+                    }
+
                 }
-            }
-        });
-        t.setRepeats(true);
-        t.start();
+            });
+            t.setRepeats(true);
+            t.start();
+        }
     }
 
     public void animatePlayer() {
@@ -164,6 +197,16 @@ public class GamePanel extends javax.swing.JPanel {
         });
         t.setRepeats(true);
         t.start();
+
+    }
+
+    public void restart() {
+
+        player.reset();
+        obstacle.reset();
+        count = 0;
+        
+        running = true;
 
     }
 

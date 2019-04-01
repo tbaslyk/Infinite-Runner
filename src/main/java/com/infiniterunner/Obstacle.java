@@ -19,6 +19,10 @@ public class Obstacle {
         w = 20;
         h = 85;
     }
+    
+    public void reset() {
+        x = 800;
+    }
 
     //Getters
     public int getX() {

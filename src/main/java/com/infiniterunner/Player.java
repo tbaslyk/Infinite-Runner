@@ -25,11 +25,17 @@ public class Player {
         visible = true;
         jumpMaxReached = false;
 
-        x = 200;
+        x = 150;
         y = 300;
 
         loadImages();
 
+    }
+    
+    public void reset() {
+        x = 150;
+        visible = true;
+        
     }
 
     private void loadImages() {
