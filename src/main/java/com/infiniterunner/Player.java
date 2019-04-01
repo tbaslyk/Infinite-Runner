@@ -9,10 +9,10 @@ import javax.swing.ImageIcon;
  */
 public class Player {
 
-    int x;
-    int y;
-    int w;
-    int h;
+    private int x;
+    private int y;
+    private int w;
+    private int h;
 
     Image running1;
     Image running2;
