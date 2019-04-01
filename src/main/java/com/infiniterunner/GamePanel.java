@@ -16,16 +16,19 @@ import javax.swing.Timer;
 public class GamePanel extends javax.swing.JPanel {
 
     private Player player;
+    private Obstacle obstacle;
     private boolean animateSwitch;
 
     public GamePanel() {
 
         animateSwitch = false;
 
+        obstacle = new Obstacle();
         player = new Player();
         initpanel();
 
         animatePlayer();
+        moveObstacle();
     }
 
     public void initpanel() {
@@ -40,7 +43,7 @@ public class GamePanel extends javax.swing.JPanel {
         super.paintComponent(g);
         drawBackground(g);
         drawPlayer(g);
-        //drawObstacle(g);
+        drawObstacle(g);
 
         Toolkit.getDefaultToolkit().sync();
 
@@ -66,6 +69,31 @@ public class GamePanel extends javax.swing.JPanel {
 
     }
 
+    public void drawObstacle(Graphics g) {
+
+        g.fillRect(obstacle.getX(), obstacle.getY(), obstacle.getW(), obstacle.getH());
+
+    }
+
+    public void moveObstacle() {
+
+        int timerDelay = 50;
+
+        Timer t = new Timer(timerDelay, new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                obstacle.moveHorizontal(-20);
+                repaint();
+                
+                if(obstacle.getX() <= -20) {
+                    obstacle.moveHorizontal(800);
+                }
+            }
+        });
+        t.setRepeats(true);
+        t.start();
+    }
+
     public void drawJump() {
         int timerDelay = 50;
 
@@ -74,8 +102,9 @@ public class GamePanel extends javax.swing.JPanel {
             public void actionPerformed(ActionEvent e) {
 
                 boolean jumpComplete = player.jump();
-                
-                if(jumpComplete) {
+                repaint();
+
+                if (jumpComplete) {
                     ((Timer) e.getSource()).stop();
                 }
             }

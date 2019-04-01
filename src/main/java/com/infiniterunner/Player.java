@@ -82,7 +82,7 @@ public class Player {
 
         boolean jumpComplete = false;
 
-        if (y > 200 && !jumpMaxReached) {
+        if (y > 175 && !jumpMaxReached) {
             moveVertical(-20);
         } else {
             jumpMaxReached = true;
