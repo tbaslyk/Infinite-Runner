@@ -32,7 +32,10 @@ public class Game extends javax.swing.JFrame {
         Dimension size = toolkit.getScreenSize();
         setLocation(size.width / 2 - getWidth() / 2, size.height / 2 - getHeight() / 2);
         
+        setIconImage(Toolkit.getDefaultToolkit().getImage(Game.class.getResource("/com/infiniterunner/dinoicon.png")));
+        
         radmniHitbox.setSelected(false);
+        radmniPause.setSelected(false);
     }
 
     /**
@@ -48,6 +51,7 @@ public class Game extends javax.swing.JFrame {
         mnAbout = new javax.swing.JMenu();
         mnOptions = new javax.swing.JMenu();
         mniRestart = new javax.swing.JMenuItem();
+        radmniPause = new javax.swing.JRadioButtonMenuItem();
         radmniHitbox = new javax.swing.JRadioButtonMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -69,6 +73,15 @@ public class Game extends javax.swing.JFrame {
             }
         });
         mnOptions.add(mniRestart);
+
+        radmniPause.setSelected(true);
+        radmniPause.setText("Pause");
+        radmniPause.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radmniPauseActionPerformed(evt);
+            }
+        });
+        mnOptions.add(radmniPause);
 
         radmniHitbox.setSelected(true);
         radmniHitbox.setText("Show hitbox (experimental)");
@@ -116,6 +129,15 @@ public class Game extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_radmniHitboxActionPerformed
 
+    private void radmniPauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radmniPauseActionPerformed
+        
+        if (radmniPause.isSelected() == true) {
+            gpnl.pauseToggle(true);
+        } else {
+            gpnl.pauseToggle(false);
+        }
+    }//GEN-LAST:event_radmniPauseActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu mnAbout;
@@ -123,5 +145,6 @@ public class Game extends javax.swing.JFrame {
     private javax.swing.JMenuBar mnbMain;
     private javax.swing.JMenuItem mniRestart;
     private javax.swing.JRadioButtonMenuItem radmniHitbox;
+    private javax.swing.JRadioButtonMenuItem radmniPause;
     // End of variables declaration//GEN-END:variables
 }

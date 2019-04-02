@@ -23,6 +23,7 @@ public class GamePanel extends javax.swing.JPanel {
     private boolean jumpInProgress;
     private boolean hitboxEnabled;
     private boolean running;
+    private boolean pauseEnabled;
     private int count;
     private JLabel lblCounter;
 
@@ -32,10 +33,12 @@ public class GamePanel extends javax.swing.JPanel {
         animationSwap = false;
         running = true;
         hitboxEnabled = false;
+        pauseEnabled = false;
         count = 0;
 
         lblCounter = new JLabel("0");
         lblCounter.setFont(new java.awt.Font("Dialog", 0, 30));
+        lblCounter.setLocation(100, 100);
 
         obstacle = new Obstacle();
         player = new Player();
@@ -62,7 +65,7 @@ public class GamePanel extends javax.swing.JPanel {
         Timer t = new Timer(timerDelay, new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                if (running) {
+                if (running && !pauseEnabled) {
                     count++;
                     String stringCount = String.valueOf(count);
                     lblCounter.setText(stringCount);
@@ -123,7 +126,7 @@ public class GamePanel extends javax.swing.JPanel {
 
             public void actionPerformed(ActionEvent e) {
 
-                if (running) {
+                if (running && !pauseEnabled) {
                     obstacle.moveHorizontal(-20);
                     repaint();
 
@@ -184,12 +187,14 @@ public class GamePanel extends javax.swing.JPanel {
         Timer t = new Timer(timerDelay, new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                if (!animationSwap) {
-                    animationSwap = true;
-                    repaint();
-                } else {
-                    animationSwap = false;
-                    repaint();
+                if (!pauseEnabled) {
+                    if (!animationSwap) {
+                        animationSwap = true;
+                        repaint();
+                    } else {
+                        animationSwap = false;
+                        repaint();
+                    }
                 }
             }
         });
@@ -236,6 +241,10 @@ public class GamePanel extends javax.swing.JPanel {
 
     public void hitboxToggle(boolean hitboxEnabled) {
         this.hitboxEnabled = hitboxEnabled;
+    }
+
+    public void pauseToggle(boolean pauseEnabled) {
+        this.pauseEnabled = pauseEnabled;
     }
 
 }
