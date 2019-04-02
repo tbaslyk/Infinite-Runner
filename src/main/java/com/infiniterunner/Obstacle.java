@@ -16,7 +16,7 @@ public class Obstacle {
 
         x = 800;
         y = 300;
-        w = 20;
+        w = 10;
         h = 85;
     }
     

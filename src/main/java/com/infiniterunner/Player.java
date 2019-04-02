@@ -107,9 +107,7 @@ public class Player {
         }
 
         if (jumpMaxReached) {
-
             moveVertical(20);
-
             if (y >= 300) {
                 jumpComplete = true;
                 jumpMaxReached = false;

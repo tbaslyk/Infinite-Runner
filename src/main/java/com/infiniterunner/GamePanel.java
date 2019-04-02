@@ -19,8 +19,9 @@ public class GamePanel extends javax.swing.JPanel {
 
     private Player player;
     private Obstacle obstacle;
-    private boolean animateSwitch;
+    private boolean animationSwap;
     private boolean jumpInProgress;
+    private boolean hitboxEnabled;
     private boolean running;
     private int count;
     private JLabel lblCounter;
@@ -28,13 +29,14 @@ public class GamePanel extends javax.swing.JPanel {
     public GamePanel() {
 
         jumpInProgress = false;
-        animateSwitch = false;
+        animationSwap = false;
         running = true;
+        hitboxEnabled = false;
         count = 0;
 
         lblCounter = new JLabel("0");
         lblCounter.setFont(new java.awt.Font("Dialog", 0, 30));
-        
+
         obstacle = new Obstacle();
         player = new Player();
 
@@ -79,6 +81,7 @@ public class GamePanel extends javax.swing.JPanel {
         drawBackground(g);
         drawPlayer(g);
         drawObstacle(g);
+        drawCollision(g);
 
         Toolkit.getDefaultToolkit().sync();
 
@@ -89,7 +92,7 @@ public class GamePanel extends javax.swing.JPanel {
         Graphics2D g2 = (Graphics2D) g;
 
         if (player.getVisible()) {
-            if (!animateSwitch) {
+            if (!animationSwap) {
                 g2.drawImage(player.getImage1(), player.getX(), player.getY(), this);
             } else {
                 g2.drawImage(player.getImage2(), player.getX(), player.getY(), this);
@@ -159,6 +162,21 @@ public class GamePanel extends javax.swing.JPanel {
         }
     }
 
+    public void drawCollision(Graphics g) {
+
+        if (hitboxEnabled) {
+            Rectangle playerBounds = player.getBounds();
+            Rectangle obstacleBounds = obstacle.getBounds();
+
+            int x = (int) playerBounds.getX();
+            int y = (int) playerBounds.getY();
+            int w = (int) playerBounds.getWidth();
+            int h = (int) playerBounds.getHeight();
+
+            g.drawRect(x, y, w, h);
+        }
+    }
+
     public void animatePlayer() {
 
         int timerDelay = 100;
@@ -166,11 +184,11 @@ public class GamePanel extends javax.swing.JPanel {
         Timer t = new Timer(timerDelay, new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                if (!animateSwitch) {
-                    animateSwitch = true;
+                if (!animationSwap) {
+                    animationSwap = true;
                     repaint();
                 } else {
-                    animateSwitch = false;
+                    animationSwap = false;
                     repaint();
                 }
             }
@@ -180,8 +198,8 @@ public class GamePanel extends javax.swing.JPanel {
     }
 
     public void checkCollision() {
-        int timerDelay = 50;
 
+        int timerDelay = 50;
         Timer t = new Timer(timerDelay, new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -189,8 +207,7 @@ public class GamePanel extends javax.swing.JPanel {
                 Rectangle obstacleBounds = obstacle.getBounds();
 
                 if (obstacleBounds.intersects(playerBounds)) {
-                    player.setVisible(false);
-                    running = false;
+                    lost();
                 }
 
             }
@@ -200,14 +217,25 @@ public class GamePanel extends javax.swing.JPanel {
 
     }
 
+    public void lost() {
+
+        player.setVisible(false);
+        running = false;
+
+    }
+
     public void restart() {
 
         player.reset();
         obstacle.reset();
         count = 0;
-        
+
         running = true;
 
+    }
+
+    public void hitboxToggle(boolean hitboxEnabled) {
+        this.hitboxEnabled = hitboxEnabled;
     }
 
 }

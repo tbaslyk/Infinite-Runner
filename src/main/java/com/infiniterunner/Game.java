@@ -2,10 +2,7 @@ package com.infiniterunner;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import javax.swing.Timer;
 
 /**
  *
@@ -34,6 +31,8 @@ public class Game extends javax.swing.JFrame {
         Toolkit toolkit = getToolkit();
         Dimension size = toolkit.getScreenSize();
         setLocation(size.width / 2 - getWidth() / 2, size.height / 2 - getHeight() / 2);
+        
+        radmniHitbox.setSelected(false);
     }
 
     /**
@@ -45,11 +44,11 @@ public class Game extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        jMenu2 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        mnbMain = new javax.swing.JMenuBar();
+        mnAbout = new javax.swing.JMenu();
+        mnOptions = new javax.swing.JMenu();
+        mniRestart = new javax.swing.JMenuItem();
+        radmniHitbox = new javax.swing.JRadioButtonMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addKeyListener(new java.awt.event.KeyAdapter() {
@@ -58,41 +57,41 @@ public class Game extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        jLabel1.setText("jLabel1");
+        mnAbout.setText("About");
+        mnbMain.add(mnAbout);
 
-        jMenu1.setText("About");
-        jMenuBar1.add(jMenu1);
+        mnOptions.setText("Options");
 
-        jMenu2.setText("Options");
-
-        jMenuItem1.setText("Restart");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        mniRestart.setText("Restart");
+        mniRestart.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                mniRestartActionPerformed(evt);
             }
         });
-        jMenu2.add(jMenuItem1);
+        mnOptions.add(mniRestart);
 
-        jMenuBar1.add(jMenu2);
+        radmniHitbox.setSelected(true);
+        radmniHitbox.setText("Show hitbox (experimental)");
+        radmniHitbox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radmniHitboxActionPerformed(evt);
+            }
+        });
+        mnOptions.add(radmniHitbox);
 
-        setJMenuBar(jMenuBar1);
+        mnbMain.add(mnOptions);
+
+        setJMenuBar(mnbMain);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(247, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(103, 103, 103))
+            .addGap(0, 400, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(128, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(130, 130, 130))
+            .addGap(0, 277, Short.MAX_VALUE)
         );
 
         pack();
@@ -104,16 +103,25 @@ public class Game extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_formKeyPressed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void mniRestartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniRestartActionPerformed
         gpnl.restart();
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    }//GEN-LAST:event_mniRestartActionPerformed
+
+    private void radmniHitboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radmniHitboxActionPerformed
+        
+        if (radmniHitbox.isSelected() == true) {
+            gpnl.hitboxToggle(true);
+        } else {
+            gpnl.hitboxToggle(false);
+        }
+    }//GEN-LAST:event_radmniHitboxActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenu mnAbout;
+    private javax.swing.JMenu mnOptions;
+    private javax.swing.JMenuBar mnbMain;
+    private javax.swing.JMenuItem mniRestart;
+    private javax.swing.JRadioButtonMenuItem radmniHitbox;
     // End of variables declaration//GEN-END:variables
 }
