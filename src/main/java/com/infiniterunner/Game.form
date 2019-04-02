@@ -16,7 +16,7 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="mniRestart">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Restart"/>
+                <Property name="text" type="java.lang.String" value="Restart (R)"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mniRestartActionPerformed"/>
@@ -25,7 +25,7 @@
             <MenuItem class="javax.swing.JRadioButtonMenuItem" name="radmniPause">
               <Properties>
                 <Property name="selected" type="boolean" value="true"/>
-                <Property name="text" type="java.lang.String" value="Pause"/>
+                <Property name="text" type="java.lang.String" value="Pause (P)"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="radmniPauseActionPerformed"/>
@@ -34,7 +34,7 @@
             <MenuItem class="javax.swing.JRadioButtonMenuItem" name="radmniHitbox">
               <Properties>
                 <Property name="selected" type="boolean" value="true"/>
-                <Property name="text" type="java.lang.String" value="Show hitbox (experimental)"/>
+                <Property name="text" type="java.lang.String" value="Show hitbox"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="radmniHitboxActionPerformed"/>

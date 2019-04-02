@@ -246,5 +246,13 @@ public class GamePanel extends javax.swing.JPanel {
     public void pauseToggle(boolean pauseEnabled) {
         this.pauseEnabled = pauseEnabled;
     }
+    
+    public boolean pauseStatus() {
+        return pauseEnabled;
+    }
+    
+    public boolean hitboxStatus() {
+        return hitboxEnabled;
+    }
 
 }

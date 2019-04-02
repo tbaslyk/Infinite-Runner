@@ -31,9 +31,9 @@ public class Game extends javax.swing.JFrame {
         Toolkit toolkit = getToolkit();
         Dimension size = toolkit.getScreenSize();
         setLocation(size.width / 2 - getWidth() / 2, size.height / 2 - getHeight() / 2);
-        
+
         setIconImage(Toolkit.getDefaultToolkit().getImage(Game.class.getResource("/com/infiniterunner/dinoicon.png")));
-        
+
         radmniHitbox.setSelected(false);
         radmniPause.setSelected(false);
     }
@@ -66,7 +66,7 @@ public class Game extends javax.swing.JFrame {
 
         mnOptions.setText("Options");
 
-        mniRestart.setText("Restart");
+        mniRestart.setText("Restart (R)");
         mniRestart.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mniRestartActionPerformed(evt);
@@ -75,7 +75,7 @@ public class Game extends javax.swing.JFrame {
         mnOptions.add(mniRestart);
 
         radmniPause.setSelected(true);
-        radmniPause.setText("Pause");
+        radmniPause.setText("Pause (P)");
         radmniPause.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 radmniPauseActionPerformed(evt);
@@ -84,7 +84,7 @@ public class Game extends javax.swing.JFrame {
         mnOptions.add(radmniPause);
 
         radmniHitbox.setSelected(true);
-        radmniHitbox.setText("Show hitbox (experimental)");
+        radmniHitbox.setText("Show hitbox");
         radmniHitbox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 radmniHitboxActionPerformed(evt);
@@ -114,6 +114,30 @@ public class Game extends javax.swing.JFrame {
         if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
             gpnl.drawJump();
         }
+
+        if (evt.getKeyCode() == KeyEvent.VK_R) {
+            gpnl.restart();
+        }
+
+        if (evt.getKeyCode() == KeyEvent.VK_P) {
+            if (gpnl.pauseStatus()) {
+                gpnl.pauseToggle(false);
+                radmniPause.setSelected(false);
+            } else {
+                gpnl.pauseToggle(true);
+                radmniPause.setSelected(true);
+            }
+        }
+
+        if (evt.getKeyCode() == KeyEvent.VK_H) {
+            if(gpnl.hitboxStatus()) {
+              gpnl.hitboxToggle(false);
+              radmniHitbox.setSelected(false);
+            } else {
+              gpnl.hitboxToggle(true);
+              radmniHitbox.setSelected(true);
+            }
+        }
     }//GEN-LAST:event_formKeyPressed
 
     private void mniRestartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniRestartActionPerformed
@@ -121,7 +145,7 @@ public class Game extends javax.swing.JFrame {
     }//GEN-LAST:event_mniRestartActionPerformed
 
     private void radmniHitboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radmniHitboxActionPerformed
-        
+
         if (radmniHitbox.isSelected() == true) {
             gpnl.hitboxToggle(true);
         } else {
@@ -130,7 +154,7 @@ public class Game extends javax.swing.JFrame {
     }//GEN-LAST:event_radmniHitboxActionPerformed
 
     private void radmniPauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radmniPauseActionPerformed
-        
+
         if (radmniPause.isSelected() == true) {
             gpnl.pauseToggle(true);
         } else {
