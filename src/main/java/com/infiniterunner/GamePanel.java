@@ -62,7 +62,7 @@ public class GamePanel extends javax.swing.JPanel {
         lblCounter.setForeground(new java.awt.Color(255, 255, 255));
         lblCounter.setBounds(360, 50, 200, 80);
 
-        lblLost = new JLabel("You lost!");
+        lblLost = new JLabel("You lost");
         lblLost.setFont(new java.awt.Font("Press Start 2P", 0, 28));
         lblLost.setForeground(new java.awt.Color(255, 255, 255));
         lblLost.setBounds(270, 175, 300, 80);
@@ -70,7 +70,7 @@ public class GamePanel extends javax.swing.JPanel {
         lblLost.setVisible(false);
 
         knight = new Obstacle(2000, 305, "knight1", "knight2");
-        cloud = new Obstacle(500, 50, "cloud1");
+        createCloud();
         player = new Player();
 
         initpanel();
@@ -123,6 +123,12 @@ public class GamePanel extends javax.swing.JPanel {
         Toolkit.getDefaultToolkit().sync();
 
     }
+    
+    public void createCloud() {
+        
+        cloud = new Obstacle(800, 50, "cloud" + Randomizer.randomizeNumber(3) + "");
+        
+    }
 
     public void drawPlayer(Graphics g) {
 
@@ -165,6 +171,7 @@ public class GamePanel extends javax.swing.JPanel {
                     cloud.moveHorizontal(-20);
 
                     if (cloud.getX() <= -800) {
+                        createCloud();
                         cloud.setX(800);
                     }
                 }
@@ -320,6 +327,7 @@ public class GamePanel extends javax.swing.JPanel {
         count = 0;
 
         running = true;
+        createCloud();
 
         lblLost.setVisible(false);
 
