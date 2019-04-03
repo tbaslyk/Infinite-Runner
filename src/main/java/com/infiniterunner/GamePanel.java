@@ -1,5 +1,7 @@
 package com.infiniterunner;
 
+import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -7,6 +9,8 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.Timer;
@@ -17,14 +21,20 @@ import javax.swing.Timer;
 public class GamePanel extends javax.swing.JPanel {
 
     private Player player;
-    private Obstacle obstacle;
+    private Obstacle knight;
+    private Obstacle cloud;
     private boolean animationSwap;
     private boolean jumpInProgress;
     private boolean hitboxEnabled;
     private boolean running;
     private boolean pauseEnabled;
+    private boolean muteEnabled;
     private int count;
     private JLabel lblCounter;
+    private JLabel lblLost;
+
+    private File pixelFontFile;
+    private Font pixelFont;
 
     public GamePanel() {
 
@@ -33,20 +43,43 @@ public class GamePanel extends javax.swing.JPanel {
         running = true;
         hitboxEnabled = false;
         pauseEnabled = false;
+        muteEnabled = false;
         count = 0;
 
-        lblCounter = new JLabel("0");
-        lblCounter.setFont(new java.awt.Font("Dialog", 0, 30));
-        lblCounter.setLocation(100, 100);
+        FxPlayer startSound = new FxPlayer("/com/infiniterunner/beginsound.wav");
+        startSound.play();
 
-        obstacle = new Obstacle();
+        pixelFontFile = new File("./src/main/resources/com/infiniterunner/PressStart2P.ttf");
+
+        try {
+            pixelFont = Font.createFont(Font.TRUETYPE_FONT, pixelFontFile);
+        } catch (FontFormatException | IOException ex) {
+            System.out.println("Internal error: " + ex.getMessage());
+        }
+
+        lblCounter = new JLabel("0");
+        lblCounter.setFont(new java.awt.Font("Press Start 2P", 0, 28));
+        lblCounter.setForeground(new java.awt.Color(255, 255, 255));
+        lblCounter.setBounds(360, 50, 100, 80);
+
+        lblLost = new JLabel("You lost!");
+        lblLost.setFont(new java.awt.Font("Press Start 2P", 0, 28));
+        lblLost.setForeground(new java.awt.Color(255, 255, 255));
+        lblLost.setBounds(270, 175, 300, 80);
+
+        lblLost.setVisible(false);
+
+        knight = new Obstacle(2000, 305, "knight1", "knight2");
+        cloud = new Obstacle(500, 50, "cloud1");
         player = new Player();
 
         initpanel();
         add(lblCounter);
+        add(lblLost);
 
         animatePlayer();
-        moveObstacle();
+        moveKnight();
+        moveCloud();
         checkCollision();
         counter();
 
@@ -55,6 +88,7 @@ public class GamePanel extends javax.swing.JPanel {
     public void initpanel() {
 
         setSize(800, 600);
+        setLayout(null);
 
     }
 
@@ -81,8 +115,9 @@ public class GamePanel extends javax.swing.JPanel {
 
         super.paintComponent(g);
         drawBackground(g);
+        drawCloud(g);
         drawPlayer(g);
-        drawObstacle(g);
+        drawKnight(g);
         drawCollision(g);
 
         Toolkit.getDefaultToolkit().sync();
@@ -104,20 +139,55 @@ public class GamePanel extends javax.swing.JPanel {
 
     public void drawBackground(Graphics g) {
 
-        ImageIcon i = new javax.swing.ImageIcon(getClass().getResource("/com/infiniterunner/background.png"));
+        ImageIcon i = new javax.swing.ImageIcon(getClass().getResource("/com/infiniterunner/background3.png"));
         Image background = i.getImage();
 
         g.drawImage(background, 0, 0, this);
 
     }
 
-    public void drawObstacle(Graphics g) {
+    public void drawCloud(Graphics g) {
 
-        g.fillRect(obstacle.getX(), obstacle.getY(), obstacle.getW(), obstacle.getH());
+        Graphics2D g2 = (Graphics2D) g;
+
+        g2.drawImage(cloud.getImage1(), cloud.getX(), cloud.getY(), this);
+    }
+
+    public void moveCloud() {
+
+        int timerDelay = 1000;
+
+        Timer t = new Timer(timerDelay, new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+
+                if (!pauseEnabled) {
+                    cloud.moveHorizontal(-20);
+
+                    if (cloud.getX() <= -800) {
+                        cloud.setX(800);
+                    }
+                }
+
+            }
+        });
+        t.setRepeats(true);
+        t.start();
 
     }
 
-    public void moveObstacle() {
+    public void drawKnight(Graphics g) {
+
+        Graphics2D g2 = (Graphics2D) g;
+
+        if (!animationSwap) {
+            g2.drawImage(knight.getImage1(), knight.getX(), knight.getY(), this);
+        } else {
+            g2.drawImage(knight.getImage2(), knight.getX(), knight.getY(), this);
+        }
+    }
+
+    public void moveKnight() {
 
         int timerDelay = 50;
 
@@ -126,11 +196,11 @@ public class GamePanel extends javax.swing.JPanel {
             public void actionPerformed(ActionEvent e) {
 
                 if (running && !pauseEnabled) {
-                    obstacle.moveHorizontal(-20);
+                    knight.moveHorizontal(-20);
                     repaint();
 
-                    if (obstacle.getX() <= -20) {
-                        obstacle.moveHorizontal(800);
+                    if (knight.getX() <= -110) {
+                        knight.moveHorizontal(800);
                     }
                 }
             }
@@ -149,7 +219,7 @@ public class GamePanel extends javax.swing.JPanel {
                 public void actionPerformed(ActionEvent e) {
 
                     jumpInProgress = true;
-                    boolean jumpComplete = player.jump();
+                    boolean jumpComplete = player.jump(pauseEnabled);
                     repaint();
 
                     if (jumpComplete) {
@@ -168,14 +238,20 @@ public class GamePanel extends javax.swing.JPanel {
 
         if (hitboxEnabled) {
             Rectangle playerBounds = player.getBounds();
-            Rectangle obstacleBounds = obstacle.getBounds();
+            Rectangle knightBounds = knight.getBounds();
 
-            int x = (int) playerBounds.getX();
-            int y = (int) playerBounds.getY();
-            int w = (int) playerBounds.getWidth();
-            int h = (int) playerBounds.getHeight();
+            int xP = (int) playerBounds.getX();
+            int yP = (int) playerBounds.getY();
+            int wP = (int) playerBounds.getWidth();
+            int hP = (int) playerBounds.getHeight();
 
-            g.drawRect(x, y, w, h);
+            int xO = (int) knightBounds.getX();
+            int yO = (int) knightBounds.getY();
+            int wO = (int) knightBounds.getWidth();
+            int hO = (int) knightBounds.getHeight();
+
+            g.drawRect(xP, yP, wP, hP);
+            g.drawRect(xO, yO, wO, hO);
         }
     }
 
@@ -208,10 +284,12 @@ public class GamePanel extends javax.swing.JPanel {
 
             public void actionPerformed(ActionEvent e) {
                 Rectangle playerBounds = player.getBounds();
-                Rectangle obstacleBounds = obstacle.getBounds();
+                Rectangle obstacleBounds = knight.getBounds();
 
                 if (obstacleBounds.intersects(playerBounds)) {
-                    lost();
+                    if (running) {
+                        lost();
+                    }
                 }
 
             }
@@ -226,15 +304,29 @@ public class GamePanel extends javax.swing.JPanel {
         player.setVisible(false);
         running = false;
 
+        lblLost.setVisible(true);
+
+        if (!muteEnabled) {
+            FxPlayer deathSound = new FxPlayer("/com/infiniterunner/deathsound.wav");
+            deathSound.play();
+        }
     }
 
     public void restart() {
 
         player.reset();
-        obstacle.reset();
+        knight.setX(2000);
+        cloud.setX(500);
         count = 0;
 
         running = true;
+
+        lblLost.setVisible(false);
+
+        if (!muteEnabled) {
+            FxPlayer restartSound = new FxPlayer("/com/infiniterunner/beginsound.wav");
+            restartSound.play();
+        }
 
     }
 
@@ -245,17 +337,25 @@ public class GamePanel extends javax.swing.JPanel {
     public void pauseToggle(boolean pauseEnabled) {
         this.pauseEnabled = pauseEnabled;
     }
-    
+
+    public void muteToggle(boolean muteEnabled) {
+        this.muteEnabled = muteEnabled;
+    }
+
     public boolean pauseStatus() {
         return pauseEnabled;
     }
-    
+
     public boolean hitboxStatus() {
         return hitboxEnabled;
     }
-    
+
     public boolean runningStatus() {
         return running;
+    }
+
+    public boolean muteStatus() {
+        return muteEnabled;
     }
 
 }

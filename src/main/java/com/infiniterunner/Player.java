@@ -31,11 +31,11 @@ public class Player {
         loadImages();
 
     }
-    
+
     public void reset() {
         x = 150;
         visible = true;
-        
+
     }
 
     private void loadImages() {
@@ -75,15 +75,14 @@ public class Player {
     public Image getImage2() {
         return running2;
     }
-    
+
     public Rectangle getBounds() {
         return new Rectangle(x, y, w, h);
     }
-    
+
     public boolean getVisible() {
         return visible;
     }
-    
 
     //Movements
     public void moveHorizontal(int dx) {
@@ -96,26 +95,28 @@ public class Player {
         y += dy;
     }
 
-    public boolean jump() {
-
+    public boolean jump(boolean pause) {
+        
         boolean jumpComplete = false;
+        if (!pause) {
 
-        if (y > 175 && !jumpMaxReached) {
-            moveVertical(-20);
-        } else {
-            jumpMaxReached = true;
-        }
+            if (y > 120 && !jumpMaxReached) {
+                moveVertical(-20);
+            } else {
+                jumpMaxReached = true;
+            }
 
-        if (jumpMaxReached) {
-            moveVertical(20);
-            if (y >= 300) {
-                jumpComplete = true;
-                jumpMaxReached = false;
+            if (jumpMaxReached) {
+                moveVertical(20);
+                if (y >= 300) {
+                    jumpComplete = true;
+                    jumpMaxReached = false;
+                }
             }
         }
         return jumpComplete;
     }
-    
+
     // Setters
     public void setVisible(boolean visible) {
         this.visible = visible;
