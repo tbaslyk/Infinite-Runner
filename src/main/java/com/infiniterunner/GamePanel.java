@@ -60,7 +60,7 @@ public class GamePanel extends javax.swing.JPanel {
         lblCounter = new JLabel("0");
         lblCounter.setFont(new java.awt.Font("Press Start 2P", 0, 28));
         lblCounter.setForeground(new java.awt.Color(255, 255, 255));
-        lblCounter.setBounds(360, 50, 100, 80);
+        lblCounter.setBounds(360, 50, 200, 80);
 
         lblLost = new JLabel("You lost!");
         lblLost.setFont(new java.awt.Font("Press Start 2P", 0, 28));
