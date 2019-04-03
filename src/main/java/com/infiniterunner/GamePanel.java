@@ -1,6 +1,5 @@
 package com.infiniterunner;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -253,6 +252,10 @@ public class GamePanel extends javax.swing.JPanel {
     
     public boolean hitboxStatus() {
         return hitboxEnabled;
+    }
+    
+    public boolean runningStatus() {
+        return running;
     }
 
 }

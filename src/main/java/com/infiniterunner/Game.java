@@ -2,7 +2,10 @@ package com.infiniterunner;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import javax.swing.Timer;
 
 /**
  *
@@ -36,6 +39,25 @@ public class Game extends javax.swing.JFrame {
 
         radmniHitbox.setSelected(false);
         radmniPause.setSelected(false);
+
+        pauseFix();
+    }
+
+    public void pauseFix() {
+        int timerDelay = 50;
+
+        Timer t = new Timer(timerDelay, new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                if (!gpnl.runningStatus()) {
+                    radmniPause.setEnabled(false);
+                } else {
+                    radmniPause.setEnabled(true);
+                }
+            }
+        });
+        t.setRepeats(true);
+        t.start();
     }
 
     /**
@@ -119,7 +141,7 @@ public class Game extends javax.swing.JFrame {
             gpnl.restart();
         }
 
-        if (evt.getKeyCode() == KeyEvent.VK_P) {
+        if (evt.getKeyCode() == KeyEvent.VK_P && gpnl.runningStatus()) {
             if (gpnl.pauseStatus()) {
                 gpnl.pauseToggle(false);
                 radmniPause.setSelected(false);
@@ -130,12 +152,12 @@ public class Game extends javax.swing.JFrame {
         }
 
         if (evt.getKeyCode() == KeyEvent.VK_H) {
-            if(gpnl.hitboxStatus()) {
-              gpnl.hitboxToggle(false);
-              radmniHitbox.setSelected(false);
+            if (gpnl.hitboxStatus()) {
+                gpnl.hitboxToggle(false);
+                radmniHitbox.setSelected(false);
             } else {
-              gpnl.hitboxToggle(true);
-              radmniHitbox.setSelected(true);
+                gpnl.hitboxToggle(true);
+                radmniHitbox.setSelected(true);
             }
         }
     }//GEN-LAST:event_formKeyPressed
