@@ -222,9 +222,11 @@ public class Game extends javax.swing.JFrame {
             if (gpnl.hitboxStatus()) {
                 gpnl.hitboxToggle(false);
                 radmniHitbox.setSelected(false);
+                gpnl.repaint();
             } else {
                 gpnl.hitboxToggle(true);
                 radmniHitbox.setSelected(true);
+                gpnl.repaint();
             }
         }
 
@@ -275,7 +277,7 @@ public class Game extends javax.swing.JFrame {
 
         winLicense.setAlwaysOnTop(true);
         winLicense.setModal(true);
-        winLicense.setSize(350, 115);
+        winLicense.setSize(320, 115);
         winLicense.setResizable(false);
         winLicense.setTitle("License");
 
@@ -283,7 +285,7 @@ public class Game extends javax.swing.JFrame {
         epLink.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
         epLink.setFont(new java.awt.Font("Dialog", 0, 12));
         epLink.setEditable(false);
-        epLink.setText("Licensed under the MIT license (c) 2019<br>Credits to <a href='https://twitter.com/ScissorMarks/'>@ScissorsMarks</a> for the player sprite <br><a href='https://github.com/tomaszbaslyk/'>My GitHub</a>");
+        epLink.setText("Licensed under the MIT license (c) 2019<br>Credits to <a href='https://twitter.com/ScissorMarks/'>@ScissorsMarks</a> for the sprites <br><a href='https://github.com/tomaszbaslyk/'>My GitHub</a>");
 
         epLink.addHyperlinkListener(new HyperlinkListener() {
             @Override
@@ -302,7 +304,11 @@ public class Game extends javax.swing.JFrame {
 
         Toolkit toolkit = getToolkit();
         Dimension size = toolkit.getScreenSize();
-        winLicense.setLocation((size.width + 150) / 2 - getWidth() / 2, size.height / 2 - getHeight() / 2);
+
+        final int x = (size.width - winLicense.getWidth()) / 2;
+        final int y = (size.height - winLicense.getHeight() - 100) / 2;
+
+        winLicense.setLocation(x, y);
 
         winLicense.setVisible(true);
 

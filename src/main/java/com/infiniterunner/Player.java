@@ -32,12 +32,6 @@ public class Player {
 
     }
 
-    public void reset() {
-        x = 150;
-        visible = true;
-
-    }
-
     private void loadImages() {
 
         ImageIcon i = new javax.swing.ImageIcon(getClass().getResource("/com/infiniterunner/dino1.png"));
@@ -120,6 +114,10 @@ public class Player {
     // Setters
     public void setVisible(boolean visible) {
         this.visible = visible;
+    }
+    
+    public void setY(int y) {
+        this.y = y;
     }
 
 }
