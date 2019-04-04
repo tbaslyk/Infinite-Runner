@@ -56,20 +56,19 @@ public class GamePanel extends javax.swing.JPanel {
         lblCounter.setFont(new java.awt.Font("Press Start 2P", 0, 28));
         lblCounter.setForeground(new java.awt.Color(255, 255, 255));
         lblCounter.setBounds(300, 50, 200, 80);
+        lblCounter.setHorizontalAlignment(SwingConstants.CENTER);
+        add(lblCounter, BorderLayout.PAGE_END);
 
         enemy = new Obstacle(2000, 300, "dinos1", "dinos2");
         player = new Player();
 
         initPanel();
-        add(lblCounter, BorderLayout.PAGE_END);
-
-        lblCounter.setHorizontalAlignment(SwingConstants.CENTER);
-
         initLogic();
         initFonts();
 
     }
 
+    // JPanel attributes
     public final void initPanel() {
 
         setSize(800, 600);
@@ -125,6 +124,7 @@ public class GamePanel extends javax.swing.JPanel {
             drawPlayer(g);
             drawEnemy(g);
             drawCollision(g);
+            
         } else {
             drawBackground(g);
             drawEnemy(g);
@@ -254,19 +254,19 @@ public class GamePanel extends javax.swing.JPanel {
     }
 
     public void drawJump() {
-        
-        int timerDelay = 50;
 
         if (!jumpInitiated) {
+            int timerDelay = 50;
+
             Timer t = new Timer(timerDelay, new ActionListener() {
 
                 boolean jumpComplete = false;
 
                 public void actionPerformed(ActionEvent e) {
 
-                    if (!jumpComplete && running) {
+                    if (!jumpComplete && running && !pauseEnabled) {
 
-                        jumpComplete = player.jump(pauseEnabled);
+                        jumpComplete = player.jump();
                         jumpInitiated = true;
                         repaint();
 
@@ -282,7 +282,6 @@ public class GamePanel extends javax.swing.JPanel {
             t.setRepeats(true);
             t.start();
         }
-
     }
 
     public void drawCollision(Graphics g) {
@@ -407,6 +406,10 @@ public class GamePanel extends javax.swing.JPanel {
 
     public boolean muteStatus() {
         return muteEnabled;
+    }
+
+    public boolean jumpingStatus() {
+        return jumpInitiated;
     }
 
 }

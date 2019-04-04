@@ -89,10 +89,9 @@ public class Player {
         y += dy;
     }
 
-    public boolean jump(boolean pause) {
+    public boolean jump() {
         
         boolean jumpComplete = false;
-        if (!pause) {
 
             if (y > 120 && !jumpMaxReached) {
                 moveVertical(-20);
@@ -107,7 +106,7 @@ public class Player {
                     jumpMaxReached = false;
                 }
             }
-        }
+
         return jumpComplete;
     }
 

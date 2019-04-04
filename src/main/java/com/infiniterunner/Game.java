@@ -21,6 +21,7 @@ public class Game extends javax.swing.JFrame {
 
     private GamePanel gpnl;
     private ImageIcon icon;
+    private boolean pressed = false;
 
     /**
      * Creates new form Game
@@ -130,6 +131,9 @@ public class Game extends javax.swing.JFrame {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 formKeyPressed(evt);
             }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                formKeyReleased(evt);
+            }
         });
 
         mnAbout.setText("About");
@@ -200,8 +204,9 @@ public class Game extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_SPACE && !gpnl.pauseStatus()) {
+        if (evt.getKeyCode() == KeyEvent.VK_SPACE && !gpnl.pauseStatus() && !pressed && !gpnl.jumpingStatus()) {
             gpnl.drawJump();
+            pressed = true;
         }
 
         if (evt.getKeyCode() == KeyEvent.VK_R) {
@@ -249,8 +254,10 @@ public class Game extends javax.swing.JFrame {
 
         if (radmniHitbox.isSelected()) {
             gpnl.hitboxToggle(true);
+            gpnl.repaint();
         } else {
             gpnl.hitboxToggle(false);
+            gpnl.repaint();
         }
     }//GEN-LAST:event_radmniHitboxActionPerformed
 
@@ -317,6 +324,12 @@ public class Game extends javax.swing.JFrame {
     private void winLicenseWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_winLicenseWindowClosing
         gpnl.pauseToggle(false);
     }//GEN-LAST:event_winLicenseWindowClosing
+
+    private void formKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyReleased
+        if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
+            pressed = false;
+        }
+    }//GEN-LAST:event_formKeyReleased
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

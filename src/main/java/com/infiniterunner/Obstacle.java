@@ -14,10 +14,10 @@ public class Obstacle {
     private int w;
     private int h;
     
-
     private Image image1;
     private Image image2;
 
+    // First constructor for two images (animation)
     public Obstacle(int x, int y, String imageName1, String imageName2) {
 
         this.x = x;
@@ -26,6 +26,7 @@ public class Obstacle {
         loadImages(imageName1, imageName2);
     }
     
+    // Second constructor for one image (static)
     public Obstacle(int x, int y, String imageName) {
         
         this.x = x;
@@ -34,6 +35,7 @@ public class Obstacle {
         loadImage(imageName);
     }
 
+    // To load two images
     private void loadImages(String imageName1, String imageName2) {
 
         ImageIcon i = new javax.swing.ImageIcon(getClass().getResource("/com/infiniterunner/" + imageName1 + ".png"));
@@ -47,6 +49,7 @@ public class Obstacle {
 
     }
     
+    // To load one image
     private void loadImage(String imageName) {
         
         ImageIcon i = new javax.swing.ImageIcon(getClass().getResource("/com/infiniterunner/" + imageName + ".png"));
