@@ -3,7 +3,7 @@
 
 ![](https://i.imgur.com/bpL0s2O.png)
 
-__An infinite runner where you play as a dinosaur.. and avoid other dinosaurs.__
+__An infinite runner where you play as a dinosaur... and avoid other dinosaurs.__
 
 Controls:
 - SPACE to jump
