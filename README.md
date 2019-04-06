@@ -1,4 +1,6 @@
 # Infinite-Runner
-[![GitHub Releases (by Release)](https://img.shields.io/github/downloads/tomaszbaslyk/infinite-runner/0.9/total.svg)](https://github.com/tomaszbaslyk/Infinite-Runner/releases/download/0.9/InfiniteRunner-0.9.jar)
+[![GitHub All Releases](https://img.shields.io/github/downloads/tomaszbaslyk/infinite-runner/total.svg)](https://github.com/tomaszbaslyk/Infinite-Runner/releases/download/0.9/InfiniteRunner-1.0.jar) ![GitHub top language](https://img.shields.io/github/languages/top/tomaszbaslyk/infinite-runner.svg)
 
-__Work in progress__
+![](https://i.imgur.com/bpL0s2O.png)
+
+__An infinite runner where you play as a dinosaur.. and avoid other dinosaurs.__
