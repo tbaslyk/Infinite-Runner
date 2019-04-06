@@ -7,7 +7,7 @@ import javax.swing.ImageIcon;
 /**
  * @author Tomasz Baslyk
  */
-public class Obstacle {
+public class Entity {
 
     private int x;
     private int y;
@@ -18,7 +18,7 @@ public class Obstacle {
     private Image image2;
 
     // First constructor for two images (animation)
-    public Obstacle(int x, int y, String imageName1, String imageName2) {
+    public Entity(int x, int y, String imageName1, String imageName2) {
 
         this.x = x;
         this.y = y;
@@ -27,7 +27,7 @@ public class Obstacle {
     }
     
     // Second constructor for one image (static)
-    public Obstacle(int x, int y, String imageName) {
+    public Entity(int x, int y, String imageName) {
         
         this.x = x;
         this.y = y;

@@ -102,6 +102,15 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="radmniHitboxActionPerformed"/>
               </Events>
             </MenuItem>
+            <MenuItem class="javax.swing.JRadioButtonMenuItem" name="radmniFPS">
+              <Properties>
+                <Property name="selected" type="boolean" value="true"/>
+                <Property name="text" type="java.lang.String" value="Show FPS (F)"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="radmniFPSActionPerformed"/>
+              </Events>
+            </MenuItem>
             <MenuItem class="javax.swing.JRadioButtonMenuItem" name="radmniMute">
               <Properties>
                 <Property name="selected" type="boolean" value="true"/>

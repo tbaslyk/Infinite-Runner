@@ -21,7 +21,8 @@ public class Game extends JFrame {
 
     private GamePanel gpnl;
     private ImageIcon icon;
-    private boolean pressed = false;
+    private boolean spacePressed = false;
+    private boolean rPressed = false;
 
     /**
      * Creates new form Game
@@ -50,6 +51,7 @@ public class Game extends JFrame {
         radmniHitbox.setSelected(false);
         radmniPause.setSelected(false);
         radmniMute.setSelected(false);
+        radmniFPS.setSelected(false);
 
         pauseFix();
     }
@@ -90,6 +92,7 @@ public class Game extends JFrame {
         mniRestart = new javax.swing.JMenuItem();
         radmniPause = new javax.swing.JRadioButtonMenuItem();
         radmniHitbox = new javax.swing.JRadioButtonMenuItem();
+        radmniFPS = new javax.swing.JRadioButtonMenuItem();
         radmniMute = new javax.swing.JRadioButtonMenuItem();
 
         winLicense.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -176,6 +179,15 @@ public class Game extends JFrame {
         });
         mnOptions.add(radmniHitbox);
 
+        radmniFPS.setSelected(true);
+        radmniFPS.setText("Show FPS (F)");
+        radmniFPS.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radmniFPSActionPerformed(evt);
+            }
+        });
+        mnOptions.add(radmniFPS);
+
         radmniMute.setSelected(true);
         radmniMute.setText("Mute (M)");
         radmniMute.addActionListener(new java.awt.event.ActionListener() {
@@ -204,13 +216,14 @@ public class Game extends JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_SPACE && !gpnl.pauseStatus() && !pressed && !gpnl.jumpingStatus()) {
+        if (evt.getKeyCode() == KeyEvent.VK_SPACE && !gpnl.pauseStatus() && !spacePressed && !gpnl.jumpingStatus()) {
             gpnl.jumpToggle(true);
-            pressed = true;
+            spacePressed = true;
         }
 
-        if (evt.getKeyCode() == KeyEvent.VK_R) {
+        if (evt.getKeyCode() == KeyEvent.VK_R && !rPressed) {
             gpnl.restart();
+            rPressed = true;
         }
 
         if (evt.getKeyCode() == KeyEvent.VK_P && gpnl.runningStatus()) {
@@ -242,6 +255,16 @@ public class Game extends JFrame {
             } else {
                 gpnl.muteToggle(true);
                 radmniMute.setSelected(true);
+            }
+        }
+        
+        if(evt.getKeyCode() == KeyEvent.VK_F) {
+            if(gpnl.fpsStatus()) {
+                gpnl.fpsToggle(false);
+                radmniFPS.setSelected(false);
+            } else {
+                gpnl.fpsToggle(true);
+                radmniFPS.setSelected(true);
             }
         }
     }//GEN-LAST:event_formKeyPressed
@@ -327,9 +350,21 @@ public class Game extends JFrame {
 
     private void formKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
-            pressed = false;
+            spacePressed = false;
+        }
+        
+        if(evt.getKeyCode() == KeyEvent.VK_R) {
+            rPressed = false;
         }
     }//GEN-LAST:event_formKeyReleased
+
+    private void radmniFPSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radmniFPSActionPerformed
+        if (radmniFPS.isSelected()) {
+            gpnl.fpsToggle(true);
+        } else {
+            gpnl.fpsToggle(false);
+        }
+    }//GEN-LAST:event_radmniFPSActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -340,6 +375,7 @@ public class Game extends JFrame {
     private javax.swing.JMenuBar mnbMain;
     private javax.swing.JMenuItem mniLicense;
     private javax.swing.JMenuItem mniRestart;
+    private javax.swing.JRadioButtonMenuItem radmniFPS;
     private javax.swing.JRadioButtonMenuItem radmniHitbox;
     private javax.swing.JRadioButtonMenuItem radmniMute;
     private javax.swing.JRadioButtonMenuItem radmniPause;

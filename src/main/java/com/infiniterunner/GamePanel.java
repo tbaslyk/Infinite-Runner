@@ -24,9 +24,10 @@ import javax.swing.Timer;
 public class GamePanel extends JPanel implements ActionListener {
 
     private Player player;
-    private Obstacle enemy, cloud;
-    private boolean animationSwap, jumpRequested, hitboxEnabled, pauseEnabled, muteEnabled, running;
-    private int count, tutorialTime, numberOfLoops;
+    private Entity enemy, cloud;
+    private boolean animationSwap, jumpRequested, hitboxEnabled, pauseEnabled, muteEnabled, running, fpsCounterEnabled;
+    private int countScore, tutorialPopupTime, loopCounter;
+    private double fpsCounter, fps;
     private final JLabel lblCounter;
 
     private Timer mainTimer;
@@ -39,12 +40,15 @@ public class GamePanel extends JPanel implements ActionListener {
         animationSwap = false;
         running = true;
         hitboxEnabled = false;
+        fpsCounterEnabled = false;
         pauseEnabled = false;
         muteEnabled = false;
         jumpRequested = false;
-        count = 0;
-        numberOfLoops = 0;
-        tutorialTime = 0;
+        countScore = 0;
+        loopCounter = 0;
+        tutorialPopupTime = 0;
+        fpsCounter = 0;
+        fps = 0;
 
         FxPlayer startSound = new FxPlayer("/com/infiniterunner/beginsound.wav");
         startSound.play();
@@ -56,7 +60,7 @@ public class GamePanel extends JPanel implements ActionListener {
         lblCounter.setHorizontalAlignment(SwingConstants.CENTER);
         add(lblCounter, BorderLayout.PAGE_END);
 
-        enemy = new Obstacle(2000, 300, "dinos1", "dinos2");
+        enemy = new Entity(3000, 300, "dino11", "dino12");
         player = new Player();
         createCloud();
 
@@ -81,14 +85,16 @@ public class GamePanel extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (running && !pauseEnabled) {
-            animatePlayer(numberOfLoops, 4);
-            moveEnemy();
-            moveCloud(numberOfLoops, 15);
-            checkCollision();
-            counter();
-            numberOfLoops++;
-        }
 
+            animatePlayer(loopCounter, 4);
+            moveEnemy();
+            moveCloud(loopCounter, 20);
+            checkCollision();
+            scoreCounter();
+
+            loopCounter++;
+            fps = calculateFramesPerSecond();
+        }
         repaint();
     }
 
@@ -102,11 +108,16 @@ public class GamePanel extends JPanel implements ActionListener {
         }
     }
 
-    public void counter() {
-        count++;
-        String stringCount = String.valueOf(count);
+    public void scoreCounter() {
+        countScore++;
+        String stringCount = String.valueOf(countScore);
         lblCounter.setText(stringCount);
+    }
 
+    public double calculateFramesPerSecond() {
+        double fps = 1000 / (fpsCounter - (fpsCounter = System.currentTimeMillis()));
+        fps *= -1;
+        return fps;
     }
 
     @Override
@@ -121,7 +132,7 @@ public class GamePanel extends JPanel implements ActionListener {
             drawEnemy(g);
             drawCollision(g);
             drawJump();
-
+            drawFramesPerSecondCounter(g);
         } else {
             drawBackground(g);
             drawEnemy(g);
@@ -158,7 +169,18 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     public void createCloud() {
-        cloud = new Obstacle(800, 50, "cloud" + Randomizer.randomizeNumber(3) + "");
+        cloud = new Entity(800, 50, "cloud" + Randomizer.randomizeNumber(4));
+    }
+
+    public void createEnemy() {
+        int randomizedDino = Randomizer.randomizeNumber(3);
+
+        String firstDino = "dino" + randomizedDino + "1";
+        String secondDino = "dino" + randomizedDino + "2";
+
+        int randomizedX = (Randomizer.randomizeNumber(4) * 100) + 800;
+
+        enemy = new Entity(randomizedX, 300, firstDino, secondDino);
     }
 
     public void drawBackground(Graphics g) {
@@ -212,15 +234,21 @@ public class GamePanel extends JPanel implements ActionListener {
         }
     }
 
+    public void drawFramesPerSecondCounter(Graphics g) {
+        if (fpsCounterEnabled) {
+            String fpsString = String.valueOf(fps);
+            g.drawString(fpsString, 10, 20);
+        }
+    }
+
     public void drawInstructions(Graphics g) {
-        if (tutorialTime < 150) {
+        if (tutorialPopupTime < 150) {
             ImageIcon i = new javax.swing.ImageIcon(getClass().getResource("/com/infiniterunner/instructions.png"));
             Image instructions = i.getImage();
 
             g.drawImage(instructions, 0, 0, this);
-            tutorialTime++;
+            tutorialPopupTime++;
         }
-
     }
 
     public void drawJump() {
@@ -230,7 +258,6 @@ public class GamePanel extends JPanel implements ActionListener {
             if (jumpComplete) {
                 jumpRequested = false;
             }
-
         }
     }
 
@@ -258,19 +285,18 @@ public class GamePanel extends JPanel implements ActionListener {
                 cloud.setX(800);
             }
         }
-
     }
 
     public void moveEnemy() {
         enemy.moveHorizontal(-15);
 
         if (enemy.getX() <= -110) {
-            enemy.moveHorizontal(860);
+            createEnemy();
         }
     }
 
     public void lost() {
-        tutorialTime = 150;
+        tutorialPopupTime = 150;
         player.setVisible(false);
         running = false;
 
@@ -286,7 +312,7 @@ public class GamePanel extends JPanel implements ActionListener {
         player.setVisible(true);
         enemy.setX(2000);
         cloud.setX(500);
-        count = 0;
+        countScore = 0;
 
         running = true;
         createCloud();
@@ -315,6 +341,10 @@ public class GamePanel extends JPanel implements ActionListener {
         jumpRequested = jumpEnabled;
     }
 
+    public void fpsToggle(boolean fpsCounterEnabled) {
+        this.fpsCounterEnabled = fpsCounterEnabled;
+    }
+
     // Getters
     public boolean pauseStatus() {
         return pauseEnabled;
@@ -334,6 +364,10 @@ public class GamePanel extends JPanel implements ActionListener {
 
     public boolean jumpingStatus() {
         return jumpRequested;
+    }
+
+    public boolean fpsStatus() {
+        return fpsCounterEnabled;
     }
 
 }
