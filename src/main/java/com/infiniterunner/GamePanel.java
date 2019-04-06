@@ -14,26 +14,22 @@ import java.io.File;
 import java.io.IOException;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
 /**
  * @author Tomasz Baslyk
  */
-public class GamePanel extends javax.swing.JPanel {
+public class GamePanel extends JPanel implements ActionListener {
 
     private Player player;
-    private Obstacle enemy;
-    private Obstacle cloud;
-    private boolean animationSwap;
-    private boolean jumpInitiated;
-    private boolean hitboxEnabled;
-    private boolean running;
-    private boolean pauseEnabled;
-    private boolean muteEnabled;
-    private int count;
-    private int tutorialTime;
+    private Obstacle enemy, cloud;
+    private boolean animationSwap, jumpRequested, hitboxEnabled, pauseEnabled, muteEnabled, running;
+    private int count, tutorialTime, numberOfLoops;
     private final JLabel lblCounter;
+
+    private Timer mainTimer;
 
     private File pixelFontFile;
     private Font pixelFont;
@@ -45,8 +41,9 @@ public class GamePanel extends javax.swing.JPanel {
         hitboxEnabled = false;
         pauseEnabled = false;
         muteEnabled = false;
-        jumpInitiated = false;
+        jumpRequested = false;
         count = 0;
+        numberOfLoops = 0;
         tutorialTime = 0;
 
         FxPlayer startSound = new FxPlayer("/com/infiniterunner/beginsound.wav");
@@ -61,27 +58,38 @@ public class GamePanel extends javax.swing.JPanel {
 
         enemy = new Obstacle(2000, 300, "dinos1", "dinos2");
         player = new Player();
+        createCloud();
 
         initPanel();
-        initLogic();
         initFonts();
+        initTimer();
 
     }
 
     // JPanel attributes
     public final void initPanel() {
-
         setSize(800, 600);
         setLayout(null);
     }
 
-    public final void initLogic() {
-        animatePlayer();
-        moveEnemy();
-        moveCloud();
-        checkCollision();
-        counter();
-        createCloud();
+    public final void initTimer() {
+        mainTimer = new Timer(33, this);
+        mainTimer.setRepeats(true);
+        mainTimer.start();
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (running && !pauseEnabled) {
+            animatePlayer(numberOfLoops, 4);
+            moveEnemy();
+            moveCloud(numberOfLoops, 15);
+            checkCollision();
+            counter();
+            numberOfLoops++;
+        }
+
+        repaint();
     }
 
     public final void initFonts() {
@@ -95,26 +103,14 @@ public class GamePanel extends javax.swing.JPanel {
     }
 
     public void counter() {
-        int timerDelay = 50;
-
-        Timer t = new Timer(timerDelay, new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                if (running && !pauseEnabled) {
-                    count++;
-                    String stringCount = String.valueOf(count);
-                    lblCounter.setText(stringCount);
-                }
-            }
-        });
-        t.setRepeats(true);
-        t.start();
+        count++;
+        String stringCount = String.valueOf(count);
+        lblCounter.setText(stringCount);
 
     }
 
     @Override
     public void paintComponent(Graphics g) {
-
         super.paintComponent(g);
 
         if (running) {
@@ -124,7 +120,8 @@ public class GamePanel extends javax.swing.JPanel {
             drawPlayer(g);
             drawEnemy(g);
             drawCollision(g);
-            
+            drawJump();
+
         } else {
             drawBackground(g);
             drawEnemy(g);
@@ -134,54 +131,37 @@ public class GamePanel extends javax.swing.JPanel {
         }
 
         Toolkit.getDefaultToolkit().sync();
-
     }
 
-    public void createCloud() {
+    public void animatePlayer(int animateTime, int animateSpeed) {
+        double result = animateTime % animateSpeed;
 
-        cloud = new Obstacle(800, 50, "cloud" + Randomizer.randomizeNumber(3) + "");
-
-    }
-
-    public void drawInstructions(Graphics g) {
-
-        if (tutorialTime < 150) {
-
-            ImageIcon i = new javax.swing.ImageIcon(getClass().getResource("/com/infiniterunner/instructions.png"));
-            Image instructions = i.getImage();
-
-            g.drawImage(instructions, 0, 0, this);
-
-            tutorialTime++;
-
-        }
-
-    }
-
-    public void drawDeathScreen(Graphics g) {
-
-        ImageIcon i = new javax.swing.ImageIcon(getClass().getResource("/com/infiniterunner/deathScreen.png"));
-        Image deathScreen = i.getImage();
-
-        g.drawImage(deathScreen, 0, 0, this);
-
-    }
-
-    public void drawPlayer(Graphics g) {
-
-        Graphics2D g2 = (Graphics2D) g;
-
-        if (player.getVisible()) {
+        if (result == 0) {
             if (!animationSwap) {
-                g2.drawImage(player.getImage1(), player.getX(), player.getY(), this);
+                animationSwap = true;
             } else {
-                g2.drawImage(player.getImage2(), player.getX(), player.getY(), this);
+                animationSwap = false;
             }
         }
     }
 
-    public void drawBackground(Graphics g) {
+    public void checkCollision() {
+        Rectangle playerBounds = player.getBounds();
+        Rectangle obstacleBounds = enemy.getBounds();
 
+        if (obstacleBounds.intersects(playerBounds)) {
+            if (running) {
+                lost();
+            }
+        }
+
+    }
+
+    public void createCloud() {
+        cloud = new Obstacle(800, 50, "cloud" + Randomizer.randomizeNumber(3) + "");
+    }
+
+    public void drawBackground(Graphics g) {
         ImageIcon i = new javax.swing.ImageIcon(getClass().getResource("/com/infiniterunner/background.png"));
         Image background = i.getImage();
 
@@ -190,102 +170,11 @@ public class GamePanel extends javax.swing.JPanel {
     }
 
     public void drawCloud(Graphics g) {
-
         Graphics2D g2 = (Graphics2D) g;
-
         g2.drawImage(cloud.getImage1(), cloud.getX(), cloud.getY(), this);
     }
 
-    public void moveCloud() {
-
-        int timerDelay = 1000;
-
-        Timer t = new Timer(timerDelay, new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-
-                if (!pauseEnabled && running) {
-                    cloud.moveHorizontal(-20);
-
-                    if (cloud.getX() <= -800) {
-                        createCloud();
-                        cloud.setX(800);
-                    }
-                }
-
-            }
-        });
-        t.setRepeats(true);
-        t.start();
-
-    }
-
-    public void drawEnemy(Graphics g) {
-
-        Graphics2D g2 = (Graphics2D) g;
-
-        if (!animationSwap) {
-            g2.drawImage(enemy.getImage1(), enemy.getX(), enemy.getY(), this);
-        } else {
-            g2.drawImage(enemy.getImage2(), enemy.getX(), enemy.getY(), this);
-        }
-    }
-
-    public void moveEnemy() {
-
-        int timerDelay = 50;
-
-        Timer t = new Timer(timerDelay, new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-
-                if (running && !pauseEnabled) {
-                    enemy.moveHorizontal(-20);
-                    repaint();
-
-                    if (enemy.getX() <= -110) {
-                        enemy.moveHorizontal(860);
-                    }
-                }
-            }
-        });
-        t.setRepeats(true);
-        t.start();
-    }
-
-    public void drawJump() {
-
-        if (!jumpInitiated) {
-            int timerDelay = 50;
-
-            Timer t = new Timer(timerDelay, new ActionListener() {
-
-                boolean jumpComplete = false;
-
-                public void actionPerformed(ActionEvent e) {
-
-                    if (!jumpComplete && running && !pauseEnabled) {
-
-                        jumpComplete = player.jump();
-                        jumpInitiated = true;
-                        repaint();
-
-                        if (jumpComplete) {
-                            ((Timer) e.getSource()).stop();
-                            jumpComplete = false;
-                            jumpInitiated = false;
-                        }
-                    }
-
-                }
-            });
-            t.setRepeats(true);
-            t.start();
-        }
-    }
-
     public void drawCollision(Graphics g) {
-
         if (hitboxEnabled) {
             Rectangle playerBounds = player.getBounds();
             Rectangle enemyBounds = enemy.getBounds();
@@ -305,52 +194,82 @@ public class GamePanel extends javax.swing.JPanel {
         }
     }
 
-    public void animatePlayer() {
+    public void drawDeathScreen(Graphics g) {
+        ImageIcon i = new javax.swing.ImageIcon(getClass().getResource("/com/infiniterunner/deathScreen.png"));
+        Image deathScreen = i.getImage();
 
-        int timerDelay = 100;
+        g.drawImage(deathScreen, 0, 0, this);
 
-        Timer t = new Timer(timerDelay, new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                if (!pauseEnabled && running) {
-                    if (!animationSwap) {
-                        animationSwap = true;
-                        repaint();
-                    } else {
-                        animationSwap = false;
-                        repaint();
-                    }
-                }
-            }
-        });
-        t.setRepeats(true);
-        t.start();
     }
 
-    public void checkCollision() {
+    public void drawEnemy(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g;
 
-        int timerDelay = 50;
-        Timer t = new Timer(timerDelay, new ActionListener() {
+        if (!animationSwap) {
+            g2.drawImage(enemy.getImage1(), enemy.getX(), enemy.getY(), this);
+        } else {
+            g2.drawImage(enemy.getImage2(), enemy.getX(), enemy.getY(), this);
+        }
+    }
 
-            public void actionPerformed(ActionEvent e) {
-                Rectangle playerBounds = player.getBounds();
-                Rectangle obstacleBounds = enemy.getBounds();
+    public void drawInstructions(Graphics g) {
+        if (tutorialTime < 150) {
+            ImageIcon i = new javax.swing.ImageIcon(getClass().getResource("/com/infiniterunner/instructions.png"));
+            Image instructions = i.getImage();
 
-                if (obstacleBounds.intersects(playerBounds)) {
-                    if (running) {
-                        lost();
-                    }
-                }
+            g.drawImage(instructions, 0, 0, this);
+            tutorialTime++;
+        }
 
+    }
+
+    public void drawJump() {
+        if (jumpRequested) {
+            boolean jumpComplete = player.jump();
+
+            if (jumpComplete) {
+                jumpRequested = false;
             }
-        });
-        t.setRepeats(true);
-        t.start();
 
+        }
+    }
+
+    public void drawPlayer(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g;
+
+        if (player.getVisible()) {
+            if (!animationSwap) {
+                g2.drawImage(player.getImage1(), player.getX(), player.getY(), this);
+            } else {
+                g2.drawImage(player.getImage2(), player.getX(), player.getY(), this);
+            }
+        }
+    }
+
+    public void moveCloud(int cloudTime, int moveSpeed) {
+        double result = cloudTime % moveSpeed;
+
+        if (result == 0) {
+
+            cloud.moveHorizontal(-20);
+
+            if (cloud.getX() <= -800) {
+                createCloud();
+                cloud.setX(800);
+            }
+        }
+
+    }
+
+    public void moveEnemy() {
+        enemy.moveHorizontal(-15);
+
+        if (enemy.getX() <= -110) {
+            enemy.moveHorizontal(860);
+        }
     }
 
     public void lost() {
-
         tutorialTime = 150;
         player.setVisible(false);
         running = false;
@@ -362,7 +281,6 @@ public class GamePanel extends javax.swing.JPanel {
     }
 
     public void restart() {
-
         pauseEnabled = false;
 
         player.setVisible(true);
@@ -380,6 +298,7 @@ public class GamePanel extends javax.swing.JPanel {
 
     }
 
+    // Setters
     public void hitboxToggle(boolean hitboxEnabled) {
         this.hitboxEnabled = hitboxEnabled;
     }
@@ -392,6 +311,11 @@ public class GamePanel extends javax.swing.JPanel {
         this.muteEnabled = muteEnabled;
     }
 
+    public void jumpToggle(boolean jumpEnabled) {
+        jumpRequested = jumpEnabled;
+    }
+
+    // Getters
     public boolean pauseStatus() {
         return pauseEnabled;
     }
@@ -409,7 +333,7 @@ public class GamePanel extends javax.swing.JPanel {
     }
 
     public boolean jumpingStatus() {
-        return jumpInitiated;
+        return jumpRequested;
     }
 
 }

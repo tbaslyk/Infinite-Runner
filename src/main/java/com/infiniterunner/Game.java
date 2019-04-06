@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JEditorPane;
-import javax.swing.JOptionPane;
+import javax.swing.JFrame;
 import javax.swing.Timer;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
@@ -17,7 +17,7 @@ import javax.swing.event.HyperlinkListener;
  *
  * @author Tomasz Baslyk
  */
-public class Game extends javax.swing.JFrame {
+public class Game extends JFrame {
 
     private GamePanel gpnl;
     private ImageIcon icon;
@@ -205,7 +205,7 @@ public class Game extends javax.swing.JFrame {
 
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_SPACE && !gpnl.pauseStatus() && !pressed && !gpnl.jumpingStatus()) {
-            gpnl.drawJump();
+            gpnl.jumpToggle(true);
             pressed = true;
         }
 
