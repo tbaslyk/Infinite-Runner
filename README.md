@@ -4,3 +4,11 @@
 ![](https://i.imgur.com/bpL0s2O.png)
 
 __An infinite runner where you play as a dinosaur.. and avoid other dinosaurs.__
+
+Controls:
+- SPACE to jump
+- P to pause
+- R to restart
+- M to mute the sound
+- F to display FPS
+- H to show hitboxes
