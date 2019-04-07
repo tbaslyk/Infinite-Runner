@@ -1,5 +1,5 @@
 # Infinite-Runner
-[![GitHub All Releases](https://img.shields.io/github/downloads/tomaszbaslyk/infinite-runner/total.svg)](https://github.com/tomaszbaslyk/Infinite-Runner/releases/download/1.0/InfiniteRunner-1.0.jar) ![GitHub top language](https://img.shields.io/github/languages/top/tomaszbaslyk/infinite-runner.svg)
+[![GitHub All Releases](https://img.shields.io/github/downloads/tomaszbaslyk/infinite-runner/total.svg)](https://github.com/tomaszbaslyk/Infinite-Runner/releases/download/1.0.1/InfiniteRunner-1.0.1.jar) ![GitHub top language](https://img.shields.io/github/languages/top/tomaszbaslyk/infinite-runner.svg)
 
 ![](https://i.imgur.com/bpL0s2O.png)
 
