@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -25,10 +26,11 @@ public class GamePanel extends JPanel implements ActionListener {
 
     private Player player;
     private Entity enemy, cloud;
-    private boolean animationSwap, jumpRequested, hitboxEnabled, pauseEnabled, muteEnabled, running, fpsCounterEnabled;
-    private int countScore, tutorialPopupTime, loopCounter;
+    private boolean animationSwap, jumpRequested, hitboxEnabled, pauseEnabled, muteEnabled, running, fpsCounterEnabled, menuScreenEnabled;
+    private int countScore, tutorialPopupTime, loopCounter, jumpDifficulty;
     private double fpsCounter, fps;
-    private final JLabel lblCounter;
+    private JLabel lblCounter;
+    private JButton btnEasy, btnHard;
 
     private Timer mainTimer;
 
@@ -36,14 +38,15 @@ public class GamePanel extends JPanel implements ActionListener {
     private Font pixelFont;
 
     public GamePanel() {
-
         animationSwap = false;
-        running = true;
+        running = false;
+        menuScreenEnabled = true;
         hitboxEnabled = false;
         fpsCounterEnabled = false;
         pauseEnabled = false;
         muteEnabled = false;
         jumpRequested = false;
+        jumpDifficulty = 0;
         countScore = 0;
         loopCounter = 0;
         tutorialPopupTime = 0;
@@ -53,27 +56,71 @@ public class GamePanel extends JPanel implements ActionListener {
         FxPlayer startSound = new FxPlayer("/com/infiniterunner/beginsound.wav");
         startSound.play();
 
-        lblCounter = new JLabel("0");
-        lblCounter.setFont(new java.awt.Font("Press Start 2P", 0, 28));
-        lblCounter.setForeground(new java.awt.Color(255, 255, 255));
-        lblCounter.setBounds(300, 50, 200, 80);
-        lblCounter.setHorizontalAlignment(SwingConstants.CENTER);
-        add(lblCounter, BorderLayout.PAGE_END);
-
         enemy = new Entity(3000, 300, "dino11", "dino12");
         player = new Player();
         createCloud();
 
-        initPanel();
         initFonts();
+        initPanel();
+        initButtons();
         initTimer();
-
     }
 
     // JPanel attributes
     public final void initPanel() {
         setSize(800, 600);
         setLayout(null);
+
+        lblCounter = new JLabel("0");
+        lblCounter.setFont(new java.awt.Font("Press Start 2P", 0, 28));
+        lblCounter.setForeground(new java.awt.Color(255, 255, 255));
+        lblCounter.setBounds(300, 50, 200, 80);
+        lblCounter.setHorizontalAlignment(SwingConstants.CENTER);
+        add(lblCounter, BorderLayout.PAGE_END);
+        lblCounter.setVisible(false);
+    }
+
+    public void initButtons() {
+        btnEasy = new JButton("EASY");
+        btnEasy.setFont(new java.awt.Font("Press Start 2P", 0, 28));
+        btnEasy.setForeground(new java.awt.Color(255, 255, 255));
+        btnEasy.setBounds(150, 350, 200, 80);
+        btnEasy.setBorder(null);
+        btnEasy.setBorderPainted(false);
+        btnEasy.setContentAreaFilled(false);
+        btnEasy.setFocusPainted(false);
+        btnEasy.setVisible(true);
+        add(btnEasy);
+        btnEasy.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jumpDifficulty = 118;
+                menuScreenEnabled = false;
+                running = true;
+                remove(btnEasy);
+                remove(btnHard);
+                lblCounter.setVisible(true);
+            }
+        });
+        btnHard = new JButton("HARD");
+        btnHard.setFont(new java.awt.Font("Press Start 2P", 0, 28));
+        btnHard.setForeground(new java.awt.Color(255, 255, 255));
+        btnHard.setBounds(440, 350, 200, 80);
+        btnHard.setBorder(null);
+        btnHard.setBorderPainted(false);
+        btnHard.setContentAreaFilled(false);
+        btnHard.setFocusPainted(false);
+        btnHard.setVisible(true);
+        add(btnHard);
+        btnHard.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jumpDifficulty = 149;
+                menuScreenEnabled = false;
+                running = true;
+                remove(btnEasy);
+                remove(btnHard);
+                lblCounter.setVisible(true);
+            }
+        });
     }
 
     public final void initTimer() {
@@ -94,6 +141,7 @@ public class GamePanel extends JPanel implements ActionListener {
 
             loopCounter++;
             fps = calculateFramesPerSecond();
+            //System.out.println(jumpDifficulty);
         }
         repaint();
     }
@@ -114,8 +162,8 @@ public class GamePanel extends JPanel implements ActionListener {
         lblCounter.setText(stringCount);
     }
 
-    public double calculateFramesPerSecond() {
-        double fps = 1000 / (fpsCounter - (fpsCounter = System.currentTimeMillis()));
+    public int calculateFramesPerSecond() {
+        int fps = (int) (1000 / (fpsCounter - (fpsCounter = System.currentTimeMillis())));
         fps *= -1;
         return fps;
     }
@@ -124,7 +172,13 @@ public class GamePanel extends JPanel implements ActionListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        if (running) {
+        if (menuScreenEnabled) {
+            drawBackground(g);
+            drawCloud(g);
+            drawPlayer(g);
+            drawEnemy(g);
+            drawMenuScreen(g);
+        } else if (running) {
             drawBackground(g);
             drawInstructions(g);
             drawCloud(g);
@@ -165,7 +219,6 @@ public class GamePanel extends JPanel implements ActionListener {
                 lost();
             }
         }
-
     }
 
     public void createCloud() {
@@ -237,7 +290,7 @@ public class GamePanel extends JPanel implements ActionListener {
     public void drawFramesPerSecondCounter(Graphics g) {
         if (fpsCounterEnabled) {
             String fpsString = String.valueOf(fps);
-            g.drawString(fpsString, 10, 20);
+            g.drawString(fpsString + " fps", 10, 20);
         }
     }
 
@@ -253,12 +306,19 @@ public class GamePanel extends JPanel implements ActionListener {
 
     public void drawJump() {
         if (jumpRequested) {
-            boolean jumpComplete = player.jump();
+            boolean jumpComplete = player.jump(jumpDifficulty);
 
             if (jumpComplete) {
                 jumpRequested = false;
             }
         }
+    }
+
+    public void drawMenuScreen(Graphics g) {
+        ImageIcon i = new javax.swing.ImageIcon(getClass().getResource("/com/infiniterunner/menuScreen.png"));
+        Image menuScreen = i.getImage();
+
+        g.drawImage(menuScreen, 0, 0, this);
     }
 
     public void drawPlayer(Graphics g) {
@@ -324,6 +384,14 @@ public class GamePanel extends JPanel implements ActionListener {
 
     }
 
+    public void backToDifficultyScreen() {
+        running = false;
+        menuScreenEnabled = true;
+        lblCounter.setVisible(false);
+        
+        initButtons();
+    }
+
     // Setters
     public void hitboxToggle(boolean hitboxEnabled) {
         this.hitboxEnabled = hitboxEnabled;
@@ -368,6 +436,10 @@ public class GamePanel extends JPanel implements ActionListener {
 
     public boolean fpsStatus() {
         return fpsCounterEnabled;
+    }
+    
+    public boolean menuScreenStatus() {
+        return menuScreenEnabled;
     }
 
 }

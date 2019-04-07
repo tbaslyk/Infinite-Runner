@@ -89,7 +89,7 @@ public class Entity {
         return new Rectangle(x, y, w, h);
     }
 
-    // Movements
+    // Setters
     public void moveHorizontal(int dx) {
 
         x += dx;

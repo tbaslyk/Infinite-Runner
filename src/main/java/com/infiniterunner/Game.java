@@ -53,10 +53,10 @@ public class Game extends JFrame {
         radmniMute.setSelected(false);
         radmniFPS.setSelected(false);
 
-        pauseFix();
+        pauseFocusFix();
     }
 
-    public void pauseFix() {
+    public void pauseFocusFix() {
         int timerDelay = 50;
 
         Timer t = new Timer(timerDelay, new ActionListener() {
@@ -64,8 +64,18 @@ public class Game extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 if (!gpnl.runningStatus()) {
                     radmniPause.setEnabled(false);
+                    mniDifficulty.setEnabled(false);
                 } else {
                     radmniPause.setEnabled(true);
+                    mniDifficulty.setEnabled(true);
+                    setAlwaysOnTop(true);
+                    requestFocus(true);
+                }
+                
+                if(gpnl.menuScreenStatus()) {
+                    mniRestart.setEnabled(false);
+                } else {
+                    mniRestart.setEnabled(true);
                 }
             }
         });
@@ -89,6 +99,7 @@ public class Game extends JFrame {
         mnAbout = new javax.swing.JMenu();
         mniLicense = new javax.swing.JMenuItem();
         mnOptions = new javax.swing.JMenu();
+        mniDifficulty = new javax.swing.JMenuItem();
         mniRestart = new javax.swing.JMenuItem();
         radmniPause = new javax.swing.JRadioButtonMenuItem();
         radmniHitbox = new javax.swing.JRadioButtonMenuItem();
@@ -152,6 +163,14 @@ public class Game extends JFrame {
         mnbMain.add(mnAbout);
 
         mnOptions.setText("Options");
+
+        mniDifficulty.setText("Change difficulty");
+        mniDifficulty.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniDifficultyActionPerformed(evt);
+            }
+        });
+        mnOptions.add(mniDifficulty);
 
         mniRestart.setText("Restart (R)");
         mniRestart.addActionListener(new java.awt.event.ActionListener() {
@@ -221,7 +240,7 @@ public class Game extends JFrame {
             spacePressed = true;
         }
 
-        if (evt.getKeyCode() == KeyEvent.VK_R && !rPressed) {
+        if (evt.getKeyCode() == KeyEvent.VK_R && !rPressed && !gpnl.menuScreenStatus()) {
             gpnl.restart();
             rPressed = true;
         }
@@ -257,9 +276,9 @@ public class Game extends JFrame {
                 radmniMute.setSelected(true);
             }
         }
-        
-        if(evt.getKeyCode() == KeyEvent.VK_F) {
-            if(gpnl.fpsStatus()) {
+
+        if (evt.getKeyCode() == KeyEvent.VK_F) {
+            if (gpnl.fpsStatus()) {
                 gpnl.fpsToggle(false);
                 radmniFPS.setSelected(false);
             } else {
@@ -352,8 +371,8 @@ public class Game extends JFrame {
         if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
             spacePressed = false;
         }
-        
-        if(evt.getKeyCode() == KeyEvent.VK_R) {
+
+        if (evt.getKeyCode() == KeyEvent.VK_R) {
             rPressed = false;
         }
     }//GEN-LAST:event_formKeyReleased
@@ -366,6 +385,10 @@ public class Game extends JFrame {
         }
     }//GEN-LAST:event_radmniFPSActionPerformed
 
+    private void mniDifficultyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniDifficultyActionPerformed
+        gpnl.backToDifficultyScreen();
+    }//GEN-LAST:event_mniDifficultyActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JEditorPane epLink;
@@ -373,6 +396,7 @@ public class Game extends JFrame {
     private javax.swing.JMenu mnAbout;
     private javax.swing.JMenu mnOptions;
     private javax.swing.JMenuBar mnbMain;
+    private javax.swing.JMenuItem mniDifficulty;
     private javax.swing.JMenuItem mniLicense;
     private javax.swing.JMenuItem mniRestart;
     private javax.swing.JRadioButtonMenuItem radmniFPS;

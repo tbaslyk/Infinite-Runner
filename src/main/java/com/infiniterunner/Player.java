@@ -13,7 +13,7 @@ public class Player {
     private int y;
     private int w;
     private int h;
-
+    
     Image running1;
     Image running2;
 
@@ -78,7 +78,7 @@ public class Player {
         return visible;
     }
 
-    //Movements
+    // Setters
     public void moveHorizontal(int dx) {
 
         x += dx;
@@ -89,11 +89,11 @@ public class Player {
         y += dy;
     }
 
-    public boolean jump() {
+    public boolean jump(int jumpHeight) {
         
         boolean jumpComplete = false;
 
-            if (y > 135 && !jumpMaxReached) {
+            if (y > jumpHeight && !jumpMaxReached) {
                 moveVertical(-15);
             } else {
                 jumpMaxReached = true;
@@ -109,8 +109,7 @@ public class Player {
 
         return jumpComplete;
     }
-
-    // Setters
+    
     public void setVisible(boolean visible) {
         this.visible = visible;
     }

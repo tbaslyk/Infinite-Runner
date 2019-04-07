@@ -17,6 +17,8 @@ public class Start {
             props.put("logoString", "...");
 
             props.put("centerWindowTitle", "off");
+            
+            props.put("focusColor", "51 51 51");
 
             AcrylLookAndFeel.setCurrentTheme(props);
 
