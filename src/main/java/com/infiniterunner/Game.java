@@ -68,7 +68,7 @@ public class Game extends JFrame {
                 } else {
                     radmniPause.setEnabled(true);
                     mniDifficulty.setEnabled(true);
-                    setAlwaysOnTop(true);
+                    //setAlwaysOnTop(false);
                     requestFocus(true);
                 }
                 

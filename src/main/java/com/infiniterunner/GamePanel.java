@@ -212,9 +212,9 @@ public class GamePanel extends JPanel implements ActionListener {
 
     public void checkCollision() {
         Rectangle playerBounds = player.getBounds();
-        Rectangle obstacleBounds = enemy.getBounds();
+        Rectangle enemyBounds = enemy.getBounds();
 
-        if (obstacleBounds.intersects(playerBounds)) {
+        if (enemyBounds.intersects(playerBounds)) {
             if (running) {
                 lost();
             }
