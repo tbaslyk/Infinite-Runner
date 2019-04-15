@@ -8,7 +8,7 @@ __An infinite runner where you play as a dinosaur... and avoid other dinosaurs._
 Controls:
 - SPACE to jump
 - P to pause
-- R to restart
+- R to restart without changing difficulty
 - M to mute the sound
 - F to display FPS
 - H to show hitboxes
