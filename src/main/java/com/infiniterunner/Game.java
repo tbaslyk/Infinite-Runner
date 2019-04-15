@@ -65,17 +65,13 @@ public class Game extends JFrame {
                 if (!gpnl.runningStatus()) {
                     radmniPause.setEnabled(false);
                     mniDifficulty.setEnabled(false);
+                    mniRestart.setEnabled(false);
                 } else {
                     radmniPause.setEnabled(true);
                     mniDifficulty.setEnabled(true);
+                    mniRestart.setEnabled(true);
                     //setAlwaysOnTop(false);
                     requestFocus(true);
-                }
-                
-                if(gpnl.menuScreenStatus()) {
-                    mniRestart.setEnabled(false);
-                } else {
-                    mniRestart.setEnabled(true);
                 }
             }
         });
@@ -240,7 +236,7 @@ public class Game extends JFrame {
             spacePressed = true;
         }
 
-        if (evt.getKeyCode() == KeyEvent.VK_R && !rPressed && !gpnl.menuScreenStatus()) {
+        if (evt.getKeyCode() == KeyEvent.VK_R && !rPressed && !gpnl.runningStatus()) {
             gpnl.restart();
             rPressed = true;
         }

@@ -26,7 +26,7 @@ public class GamePanel extends JPanel implements ActionListener {
 
     private Player player;
     private Entity enemy, cloud;
-    private boolean animationSwap, jumpRequested, hitboxEnabled, pauseEnabled, muteEnabled, running, fpsCounterEnabled, menuScreenEnabled;
+    private boolean animationSwap, jumpRequested, hitboxEnabled, pauseEnabled, muteEnabled, running, fpsCounterEnabled;
     private int countScore, tutorialPopupTime, loopCounter, jumpDifficulty;
     private double fpsCounter, fps;
     private JLabel lblCounter;
@@ -40,7 +40,6 @@ public class GamePanel extends JPanel implements ActionListener {
     public GamePanel() {
         animationSwap = false;
         running = false;
-        menuScreenEnabled = true;
         hitboxEnabled = false;
         fpsCounterEnabled = false;
         pauseEnabled = false;
@@ -54,7 +53,6 @@ public class GamePanel extends JPanel implements ActionListener {
         fps = 0;
 
         FxPlayer startSound = new FxPlayer("/com/infiniterunner/beginsound.wav");
-        startSound.play();
 
         enemy = new Entity(3000, 300, "dino11", "dino12");
         player = new Player();
@@ -94,7 +92,7 @@ public class GamePanel extends JPanel implements ActionListener {
         btnEasy.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jumpDifficulty = 118;
-                menuScreenEnabled = false;
+                restart();
                 running = true;
                 remove(btnEasy);
                 remove(btnHard);
@@ -114,7 +112,7 @@ public class GamePanel extends JPanel implements ActionListener {
         btnHard.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jumpDifficulty = 149;
-                menuScreenEnabled = false;
+                restart();
                 running = true;
                 remove(btnEasy);
                 remove(btnHard);
@@ -172,13 +170,16 @@ public class GamePanel extends JPanel implements ActionListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        if (menuScreenEnabled) {
+        if (!running) {
             drawBackground(g);
             drawCloud(g);
             drawPlayer(g);
             drawEnemy(g);
+            drawCollision(g);
+            drawFramesPerSecondCounter(g);
             drawMenuScreen(g);
-        } else if (running) {
+            
+        } else {
             drawBackground(g);
             drawInstructions(g);
             drawCloud(g);
@@ -187,14 +188,8 @@ public class GamePanel extends JPanel implements ActionListener {
             drawCollision(g);
             drawJump();
             drawFramesPerSecondCounter(g);
-        } else {
-            drawBackground(g);
-            drawEnemy(g);
-            drawCloud(g);
-            drawCollision(g);
-            drawDeathScreen(g);
         }
-
+        
         Toolkit.getDefaultToolkit().sync();
     }
 
@@ -267,14 +262,6 @@ public class GamePanel extends JPanel implements ActionListener {
             g.drawRect(xP, yP, wP, hP);
             g.drawRect(xO, yO, wO, hO);
         }
-    }
-
-    public void drawDeathScreen(Graphics g) {
-        ImageIcon i = new javax.swing.ImageIcon(getClass().getResource("/com/infiniterunner/deathScreen.png"));
-        Image deathScreen = i.getImage();
-
-        g.drawImage(deathScreen, 0, 0, this);
-
     }
 
     public void drawEnemy(Graphics g) {
@@ -358,7 +345,7 @@ public class GamePanel extends JPanel implements ActionListener {
     public void lost() {
         tutorialPopupTime = 150;
         player.setVisible(false);
-        running = false;
+        backToDifficultyScreen();
 
         if (!muteEnabled) {
             FxPlayer deathSound = new FxPlayer("/com/infiniterunner/deathsound.wav");
@@ -386,9 +373,6 @@ public class GamePanel extends JPanel implements ActionListener {
 
     public void backToDifficultyScreen() {
         running = false;
-        menuScreenEnabled = true;
-        lblCounter.setVisible(false);
-        
         initButtons();
     }
 
@@ -436,10 +420,6 @@ public class GamePanel extends JPanel implements ActionListener {
 
     public boolean fpsStatus() {
         return fpsCounterEnabled;
-    }
-    
-    public boolean menuScreenStatus() {
-        return menuScreenEnabled;
     }
 
 }
