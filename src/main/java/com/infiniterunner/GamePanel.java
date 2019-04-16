@@ -93,12 +93,7 @@ public class GamePanel extends JPanel implements ActionListener {
         add(btnEasy);
         btnEasy.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                jumpDifficulty = 118;
-                restart();
-                running = true;
-                remove(btnEasy);
-                remove(btnHard);
-                lblCounter.setVisible(true);
+                startEasy();
             }
         });
         btnHard = new JButton("HARD");
@@ -113,12 +108,7 @@ public class GamePanel extends JPanel implements ActionListener {
         add(btnHard);
         btnHard.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                jumpDifficulty = 149;
-                restart();
-                running = true;
-                remove(btnEasy);
-                remove(btnHard);
-                lblCounter.setVisible(true);
+                startHard();
             }
         });
     }
@@ -181,6 +171,24 @@ public class GamePanel extends JPanel implements ActionListener {
         int fps = (int) (1000 / (fpsCounter - (fpsCounter = System.currentTimeMillis())));
         fps *= -1;
         return fps;
+    }
+
+    public void startEasy() {
+        jumpDifficulty = 118;
+        restart();
+        running = true;
+        remove(btnEasy);
+        remove(btnHard);
+        lblCounter.setVisible(true);
+    }
+
+    public void startHard() {
+        jumpDifficulty = 149;
+        restart();
+        running = true;
+        remove(btnEasy);
+        remove(btnHard);
+        lblCounter.setVisible(true);
     }
 
     /* paint component method
@@ -440,11 +448,11 @@ public class GamePanel extends JPanel implements ActionListener {
     public boolean jumpingStatus() {
         return jumpInitiated;
     }
-    
+
     public boolean playerAboveGround() {
         int y = player.getY();
-        
-        if(y < 300) {
+
+        if (y < 300) {
             return true;
         } else {
             return false;

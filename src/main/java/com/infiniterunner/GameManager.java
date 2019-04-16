@@ -234,11 +234,11 @@ public class GameManager extends JFrame {
             if (gpnl.pauseStatus()) {
                 gpnl.pauseToggle(false);
                 radmniPause.setSelected(false);
-                
-                if(gpnl.playerAboveGround()) {
+
+                if (gpnl.playerAboveGround()) {
                     gpnl.jumpToggle(true);
                 }
-                
+
             } else {
                 gpnl.pauseToggle(true);
                 gpnl.jumpToggle(false);
@@ -256,6 +256,14 @@ public class GameManager extends JFrame {
                 radmniHitbox.setSelected(true);
                 gpnl.repaint();
             }
+        }
+
+        if (evt.getKeyCode() == KeyEvent.VK_1 && !gpnl.runningStatus()) {
+            gpnl.startEasy();
+        }
+
+        if (evt.getKeyCode() == KeyEvent.VK_2 && !gpnl.runningStatus()) {
+            gpnl.startHard();
         }
 
         if (evt.getKeyCode() == KeyEvent.VK_M) {
