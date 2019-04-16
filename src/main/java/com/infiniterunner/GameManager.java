@@ -17,7 +17,7 @@ import javax.swing.event.HyperlinkListener;
  *
  * @author Tomasz Baslyk
  */
-public class Game extends JFrame {
+public class GameManager extends JFrame {
 
     private GamePanel gpnl;
     private ImageIcon icon;
@@ -27,7 +27,7 @@ public class Game extends JFrame {
     /**
      * Creates new form Game
      */
-    public Game() {
+    public GameManager() {
 
         gpnl = new GamePanel();
         add(gpnl);
@@ -46,7 +46,7 @@ public class Game extends JFrame {
 
         icon = new javax.swing.ImageIcon(getClass().getResource("/com/infiniterunner/infoicon.png"));
 
-        setIconImage(Toolkit.getDefaultToolkit().getImage(Game.class.getResource("/com/infiniterunner/dinoicon.png")));
+        setIconImage(Toolkit.getDefaultToolkit().getImage(GameManager.class.getResource("/com/infiniterunner/dinoicon.png")));
 
         radmniHitbox.setSelected(false);
         radmniPause.setSelected(false);
@@ -64,11 +64,9 @@ public class Game extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 if (!gpnl.runningStatus()) {
                     radmniPause.setEnabled(false);
-                    mniDifficulty.setEnabled(false);
                     mniRestart.setEnabled(false);
                 } else {
                     radmniPause.setEnabled(true);
-                    mniDifficulty.setEnabled(true);
                     mniRestart.setEnabled(true);
                     //setAlwaysOnTop(false);
                     requestFocus(true);
@@ -95,7 +93,6 @@ public class Game extends JFrame {
         mnAbout = new javax.swing.JMenu();
         mniLicense = new javax.swing.JMenuItem();
         mnOptions = new javax.swing.JMenu();
-        mniDifficulty = new javax.swing.JMenuItem();
         mniRestart = new javax.swing.JMenuItem();
         radmniPause = new javax.swing.JRadioButtonMenuItem();
         radmniHitbox = new javax.swing.JRadioButtonMenuItem();
@@ -159,14 +156,6 @@ public class Game extends JFrame {
         mnbMain.add(mnAbout);
 
         mnOptions.setText("Options");
-
-        mniDifficulty.setText("Change difficulty");
-        mniDifficulty.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mniDifficultyActionPerformed(evt);
-            }
-        });
-        mnOptions.add(mniDifficulty);
 
         mniRestart.setText("Restart (R)");
         mniRestart.addActionListener(new java.awt.event.ActionListener() {
@@ -236,7 +225,7 @@ public class Game extends JFrame {
             spacePressed = true;
         }
 
-        if (evt.getKeyCode() == KeyEvent.VK_R && !rPressed && !gpnl.runningStatus()) {
+        if (evt.getKeyCode() == KeyEvent.VK_R && !rPressed && gpnl.runningStatus()) {
             gpnl.restart();
             rPressed = true;
         }
@@ -381,10 +370,6 @@ public class Game extends JFrame {
         }
     }//GEN-LAST:event_radmniFPSActionPerformed
 
-    private void mniDifficultyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniDifficultyActionPerformed
-        gpnl.backToDifficultyScreen();
-    }//GEN-LAST:event_mniDifficultyActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JEditorPane epLink;
@@ -392,7 +377,6 @@ public class Game extends JFrame {
     private javax.swing.JMenu mnAbout;
     private javax.swing.JMenu mnOptions;
     private javax.swing.JMenuBar mnbMain;
-    private javax.swing.JMenuItem mniDifficulty;
     private javax.swing.JMenuItem mniLicense;
     private javax.swing.JMenuItem mniRestart;
     private javax.swing.JRadioButtonMenuItem radmniFPS;

@@ -10,7 +10,6 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.IOException;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -33,8 +32,6 @@ public class GamePanel extends JPanel implements ActionListener {
     private JButton btnEasy, btnHard;
 
     private Timer mainTimer;
-
-    private File pixelFontFile;
     private Font pixelFont;
 
     public GamePanel() {
@@ -54,10 +51,12 @@ public class GamePanel extends JPanel implements ActionListener {
 
         FxPlayer startSound = new FxPlayer("/com/infiniterunner/beginsound.wav");
 
+        // instantiates all entities
         enemy = new Entity(3000, 300, "dino11", "dino12");
         player = new Player();
         createCloud();
 
+        // initiaties all swing components and game timer
         initFonts();
         initPanel();
         initButtons();
@@ -78,6 +77,7 @@ public class GamePanel extends JPanel implements ActionListener {
         lblCounter.setVisible(false);
     }
 
+    // Difficulty buttons
     public void initButtons() {
         btnEasy = new JButton("EASY");
         btnEasy.setFont(new java.awt.Font("Press Start 2P", 0, 28));
@@ -121,12 +121,14 @@ public class GamePanel extends JPanel implements ActionListener {
         });
     }
 
+    // Game timer
     public final void initTimer() {
         mainTimer = new Timer(33, this);
         mainTimer.setRepeats(true);
         mainTimer.start();
     }
 
+    // Timer loop
     @Override
     public void actionPerformed(ActionEvent e) {
         if (running && !pauseEnabled) {
@@ -141,31 +143,36 @@ public class GamePanel extends JPanel implements ActionListener {
             fps = calculateFramesPerSecond();
             //System.out.println(jumpDifficulty);
         }
+        // calls paintComponent method
         repaint();
     }
 
+    // 8-bit font
     public final void initFonts() {
-        pixelFontFile = new File("./src/main/resources/com/infiniterunner/PressStart2P.ttf");
-
         try {
-            pixelFont = Font.createFont(Font.TRUETYPE_FONT, pixelFontFile);
+            pixelFont = Font.createFont(Font.TRUETYPE_FONT, this.getClass().getResourceAsStream("/com/infiniterunner/PressStart2P.ttf"));
         } catch (FontFormatException | IOException ex) {
             System.out.println("Internal error: " + ex.getMessage());
         }
     }
 
+    // game score counter
     public void scoreCounter() {
         countScore++;
         String stringCount = String.valueOf(countScore);
         lblCounter.setText(stringCount);
     }
 
+    // fps calculator
     public int calculateFramesPerSecond() {
         int fps = (int) (1000 / (fpsCounter - (fpsCounter = System.currentTimeMillis())));
         fps *= -1;
         return fps;
     }
 
+    /* paint component method
+    * draws all entities etc. depending on the game state (running)
+    */
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -193,6 +200,7 @@ public class GamePanel extends JPanel implements ActionListener {
         Toolkit.getDefaultToolkit().sync();
     }
 
+    // method for animating sprites
     public void animatePlayer(int animateTime, int animateSpeed) {
         double result = animateTime % animateSpeed;
 
@@ -205,6 +213,7 @@ public class GamePanel extends JPanel implements ActionListener {
         }
     }
 
+    // collision checker
     public void checkCollision() {
         Rectangle playerBounds = player.getBounds();
         Rectangle enemyBounds = enemy.getBounds();
