@@ -234,8 +234,14 @@ public class GameManager extends JFrame {
             if (gpnl.pauseStatus()) {
                 gpnl.pauseToggle(false);
                 radmniPause.setSelected(false);
+                
+                if(gpnl.playerAboveGround()) {
+                    gpnl.jumpToggle(true);
+                }
+                
             } else {
                 gpnl.pauseToggle(true);
+                gpnl.jumpToggle(false);
                 radmniPause.setSelected(true);
             }
         }

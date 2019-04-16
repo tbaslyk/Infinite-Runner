@@ -88,6 +88,10 @@ public class Player {
 
         y += dy;
     }
+    
+    public void setJumpMaxReached(boolean reached) {
+        jumpMaxReached = reached;
+    }
 
     public boolean jump(int jumpHeight) {
         

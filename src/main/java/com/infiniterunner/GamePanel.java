@@ -27,7 +27,7 @@ public class GamePanel extends JPanel implements ActionListener {
 
     private Player player;
     private Entity enemy, cloud;
-    private boolean animationSwap, jumpRequested, hitboxEnabled, pauseEnabled, muteEnabled, running, fpsCounterEnabled;
+    private boolean animationSwap, jumpInitiated, hitboxEnabled, pauseEnabled, muteEnabled, running, fpsCounterEnabled;
     private int countScore, tutorialPopupTime, loopCounter, jumpDifficulty;
     private double fpsCounter, fps;
     private JLabel lblCounter;
@@ -43,7 +43,7 @@ public class GamePanel extends JPanel implements ActionListener {
         fpsCounterEnabled = false;
         pauseEnabled = false;
         muteEnabled = false;
-        jumpRequested = false;
+        jumpInitiated = false;
         jumpDifficulty = 0;
         countScore = 0;
         loopCounter = 0;
@@ -59,7 +59,7 @@ public class GamePanel extends JPanel implements ActionListener {
         createCloud();
 
         // initiaties all swing components and game timer
-        initFonts();
+        initFont();
         initPanel();
         initButtons();
         initTimer();
@@ -150,20 +150,19 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     // 8-bit font
-    public final void initFonts() {
+    public final void initFont() {
         try {
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             pixelFont = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("/com/infiniterunner/PressStart2P.ttf")).deriveFont(28f);
             ge.registerFont(pixelFont);
-            
+
             /*
-            String[] allFonts = ge.getAvailableFontFamilyNames();
+             String[] allFonts = ge.getAvailableFontFamilyNames();
             
-            for(String font : allFonts) {
-                System.out.println(font);
-            }
-            */
-            
+             for(String font : allFonts) {
+             System.out.println(font);
+             }
+             */
         } catch (FontFormatException | IOException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(null, "Failed to load custom font!\n" + ex.getMessage());
@@ -185,22 +184,13 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     /* paint component method
-    * draws all entities etc. depending on the game state (running)
-    */
+     * draws all entities etc. depending on the game state (running)
+     */
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        if (!running) {
-            drawBackground(g);
-            drawCloud(g);
-            drawPlayer(g);
-            drawEnemy(g);
-            drawCollision(g);
-            drawFramesPerSecondCounter(g);
-            drawMenuScreen(g);
-            
-        } else {
+        if (running) {
             drawBackground(g);
             drawInstructions(g);
             drawCloud(g);
@@ -209,8 +199,16 @@ public class GamePanel extends JPanel implements ActionListener {
             drawCollision(g);
             drawJump();
             drawFramesPerSecondCounter(g);
+        } else {
+            drawBackground(g);
+            drawCloud(g);
+            drawPlayer(g);
+            drawEnemy(g);
+            drawCollision(g);
+            drawFramesPerSecondCounter(g);
+            drawMenuScreen(g);
         }
-        
+
         Toolkit.getDefaultToolkit().sync();
     }
 
@@ -315,11 +313,11 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     public void drawJump() {
-        if (jumpRequested) {
+        if (jumpInitiated) {
             boolean jumpComplete = player.jump(jumpDifficulty);
 
             if (jumpComplete) {
-                jumpRequested = false;
+                jumpInitiated = false;
             }
         }
     }
@@ -378,8 +376,10 @@ public class GamePanel extends JPanel implements ActionListener {
 
     public void restart() {
         pauseEnabled = false;
-
+        jumpInitiated = false;
+        player.setJumpMaxReached(false);
         player.setVisible(true);
+        player.setY(300);
         enemy.setX(2000);
         cloud.setX(500);
         countScore = 0;
@@ -413,7 +413,7 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     public void jumpToggle(boolean jumpEnabled) {
-        jumpRequested = jumpEnabled;
+        jumpInitiated = jumpEnabled;
     }
 
     public void fpsToggle(boolean fpsCounterEnabled) {
@@ -438,7 +438,17 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     public boolean jumpingStatus() {
-        return jumpRequested;
+        return jumpInitiated;
+    }
+    
+    public boolean playerAboveGround() {
+        int y = player.getY();
+        
+        if(y < 300) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public boolean fpsStatus() {
