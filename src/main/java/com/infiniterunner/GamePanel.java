@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
@@ -69,7 +71,7 @@ public class GamePanel extends JPanel implements ActionListener {
         setLayout(null);
 
         lblCounter = new JLabel("0");
-        lblCounter.setFont(new java.awt.Font("Press Start 2P", 0, 28));
+        lblCounter.setFont(pixelFont);
         lblCounter.setForeground(new java.awt.Color(255, 255, 255));
         lblCounter.setBounds(300, 50, 200, 80);
         lblCounter.setHorizontalAlignment(SwingConstants.CENTER);
@@ -80,7 +82,7 @@ public class GamePanel extends JPanel implements ActionListener {
     // Difficulty buttons
     public void initButtons() {
         btnEasy = new JButton("EASY");
-        btnEasy.setFont(new java.awt.Font("Press Start 2P", 0, 28));
+        btnEasy.setFont(pixelFont);
         btnEasy.setForeground(new java.awt.Color(255, 255, 255));
         btnEasy.setBounds(150, 350, 200, 80);
         btnEasy.setBorder(null);
@@ -100,7 +102,7 @@ public class GamePanel extends JPanel implements ActionListener {
             }
         });
         btnHard = new JButton("HARD");
-        btnHard.setFont(new java.awt.Font("Press Start 2P", 0, 28));
+        btnHard.setFont(pixelFont);
         btnHard.setForeground(new java.awt.Color(255, 255, 255));
         btnHard.setBounds(440, 350, 200, 80);
         btnHard.setBorder(null);
@@ -150,9 +152,21 @@ public class GamePanel extends JPanel implements ActionListener {
     // 8-bit font
     public final void initFonts() {
         try {
-            pixelFont = Font.createFont(Font.TRUETYPE_FONT, this.getClass().getResourceAsStream("/com/infiniterunner/PressStart2P.ttf"));
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            pixelFont = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("/com/infiniterunner/PressStart2P.ttf")).deriveFont(28f);
+            ge.registerFont(pixelFont);
+            
+            /*
+            String[] allFonts = ge.getAvailableFontFamilyNames();
+            
+            for(String font : allFonts) {
+                System.out.println(font);
+            }
+            */
+            
         } catch (FontFormatException | IOException ex) {
-            System.out.println("Internal error: " + ex.getMessage());
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Failed to load custom font!\n" + ex.getMessage());
         }
     }
 
